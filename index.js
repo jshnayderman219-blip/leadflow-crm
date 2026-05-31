@@ -212,7 +212,31 @@ app.get('/api/auth/me', authenticate, (req, res) => {
 
 // ── LEADS ROUTES ──
 app.get('/api/leads', authenticate, (req, res) => proxyToAPI('GET', '/api/leads', req, res));
-app.get('/api/leads/:id', authenticate, [param('id').isInt()], handleValidation, (req, res) => proxyToAPI('GET', `/api/leads/${req.params.id}`, req, res));
+app.get('/api/leads/:id', authenticate, [param('id').isInt()], handleValidation, async (req, res) => {
+  // Alivion API lacks single-lead endpoint; fetch all and filter
+  try {
+    const leadId = parseInt(req.params.id);
+    const r = await fetch(`${API_BASE}/api/leads`);
+    const data = await r.json();
+    const leads = data.leads || data;
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead) {
+      return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Lead not found' } });
+    }
+    res.json({
+      id: lead.id, name: lead.name || '', email: lead.email || '', phone: lead.phone || '',
+      lead_source: lead.source || lead.lead_source || 'Website', message: lead.message || '',
+      property_interest: lead.property_interest || '', preferred_location: lead.preferred_location || '',
+      budget_min: lead.budget_min, budget_max: lead.budget_max, timeline: lead.timeline || '',
+      stage: lead.stage || 'new_lead', ai_score: lead.ai_score || 50, notes: lead.notes || '',
+      last_contacted: lead.last_contacted || '', created_at: lead.created_at, updated_at: lead.updated_at,
+      communications: [], appointments: []
+    });
+  } catch (e) {
+    console.error('Lead detail error:', e.message);
+    res.status(502).json({ success: false, error: { code: 'PROXY_ERROR', message: 'Backend service unavailable' } });
+  }
+});
 
 app.post('/api/leads', authenticate, [
   body('name').optional().isString().trim(),
