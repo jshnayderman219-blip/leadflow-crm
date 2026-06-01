@@ -1,724 +1,724 @@
-     1|<!DOCTYPE html>
-     2|<html lang="en">
-     3|<head>
-     4|<meta charset="UTF-8">
-     5|<meta name="viewport" content="width=device-width, initial-scale=1.0">
-     6|<title>LeadFlow AI - Real Estate Lead Nurturing CRM</title>
-     7|<link rel="preconnect" href="https://fonts.googleapis.com">
-     8|<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-     9|<style>
-    10|  :root {
-    11|    --bg-primary: #f8fafc; --bg-secondary: #ffffff; --bg-tertiary: #f1f5f9;
-    12|    --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
-    13|    --border-color: #e2e8f0; --border-subtle: #f1f5f9;
-    14|    --accent: #0ea5e9; --accent-hover: #0284c7;
-    15|    --accent-gradient: linear-gradient(135deg, #0ea5e9, #06b6d4);
-    16|    --accent-glow: rgba(14,165,233,0.25);
-    17|    --card-bg: rgba(255,255,255,0.8); --card-border: rgba(226,232,240,0.8);
-    18|    --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-    19|    --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
-    20|    --sidebar-bg: #ffffff; --sidebar-border: #e2e8f0;
-    21|    --sidebar-item-hover: #f1f5f9; --sidebar-item-active: rgba(14,165,233,0.1);
-    22|    --topbar-bg: rgba(255,255,255,0.85); --kpi-icon-bg: rgba(14,165,233,0.1);
-    23|    --kpi-positive: #10b981; --kpi-negative: #ef4444; --chart-grid: #e2e8f0;
-    24|    --dropdown-bg: #ffffff; --dropdown-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    25|    --table-stripe: #f8fafc; --table-hover: #f0f9ff;
-    26|    --status-lead: #f59e0b; --status-active: #10b981; --status-closed: #6b7280;
-    27|    --badge-new-bg: rgba(14,165,233,0.12); --badge-hot-bg: rgba(239,68,68,0.12);
-    28|    --tooltip-bg: #0f172a; --skeleton: #e2e8f0; --skeleton-shine: #f1f5f9;
-    29|    --backdrop: rgba(15,23,42,0.3); --glass-blur: 12px;
-    30|    --radius-sm: 6px; --radius: 10px; --radius-lg: 14px; --radius-xl: 18px;
-    31|    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    32|    --sidebar-width: 260px; --topbar-height: 64px;
-    33|    --gold: #d4a853; --gold-light: #f0d78c;
-    34|    --pipeline-new: #6366f1; --pipeline-contacted: #8b5cf6; --pipeline-qualified: #0ea5e9;
-    35|    --pipeline-showing: #06b6d4; --pipeline-offer: #f59e0b; --pipeline-contract: #10b981;
-    36|    --pipeline-closed: #6b7280; --pipeline-lost: #ef4444;
-    37|  }
-    38|  .dark {
-    39|    --bg-primary: #0b1120; --bg-secondary: #111827; --bg-tertiary: #1e293b;
-    40|    --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
-    41|    --border-color: #1e293b; --border-subtle: #1a2332;
-    42|    --card-bg: rgba(30,41,59,0.7); --card-border: rgba(51,65,85,0.6);
-    43|    --card-shadow: 0 1px 3px rgba(0,0,0,0.2); --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.3);
-    44|    --sidebar-bg: #0f172a; --sidebar-border: #1e293b;
-    45|    --sidebar-item-hover: #1e293b; --sidebar-item-active: rgba(14,165,233,0.15);
-    46|    --topbar-bg: rgba(15,23,42,0.85); --kpi-icon-bg: rgba(14,165,233,0.15);
-    47|    --chart-grid: #334155; --dropdown-bg: #1e293b;
-    48|    --dropdown-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    49|    --table-stripe: #111827; --table-hover: #0f2a3f;
-    50|    --badge-new-bg: rgba(14,165,233,0.2); --badge-hot-bg: rgba(239,68,68,0.2);
-    51|    --tooltip-bg: #334155; --skeleton: #1e293b; --skeleton-shine: #334155;
-    52|    --backdrop: rgba(0,0,0,0.5);
-    53|  }
-    54|  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    55|  html{font-size:15px;scroll-behavior:smooth}
-    56|  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.5;transition:background var(--transition),color var(--transition);overflow:hidden;height:100vh}
-    57|  a{color:var(--accent);text-decoration:none}
-    58|  button{cursor:pointer;font-family:inherit;border:none;background:none}
-    59|  input,select,textarea{font-family:inherit;font-size:inherit}
-    60|  ::-webkit-scrollbar{width:6px}
-    61|  ::-webkit-scrollbar-track{background:transparent}
-    62|  ::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
-    63|
-    64|  /* Layout */
-    65|  .app-layout{display:flex;height:100vh;overflow:hidden}
-    66|  .sidebar{width:var(--sidebar-width);min-width:var(--sidebar-width);background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column;z-index:100;transition:transform 0.3s ease}
-    67|  .sidebar-logo{padding:20px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border-subtle)}
-    68|  .sidebar-logo svg{width:32px;height:32px;color:var(--accent)}
-    69|  .sidebar-logo span{font-size:1.25rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    70|  .sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
-    71|  .sidebar-nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;color:var(--text-secondary);font-size:0.9rem;font-weight:500;cursor:pointer;position:relative;transition:all var(--transition);border-left:3px solid transparent}
-    72|  .sidebar-nav-item:hover{background:var(--sidebar-item-hover);color:var(--text-primary)}
-    73|  .sidebar-nav-item.active{color:var(--accent);background:var(--sidebar-item-active);border-left-color:var(--accent)}
-    74|  .sidebar-nav-item svg{width:20px;height:20px;flex-shrink:0}
-    75|  .sidebar-nav-item .badge{background:var(--accent);color:#fff;font-size:0.7rem;padding:1px 7px;border-radius:10px;margin-left:auto}
-    76|  .sidebar-footer{padding:16px 24px;border-top:1px solid var(--border-subtle)}
-    77|
-    78|  /* Main */
-    79|  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    80|  .topbar{height:var(--topbar-height);min-height:var(--topbar-height);background:var(--topbar-bg);backdrop-filter:blur(var(--glass-blur));border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:50}
-    81|  .topbar-left{display:flex;align-items:center;gap:16px}
-    82|  .hamburger{display:none;padding:8px;border-radius:var(--radius-sm)}
-    83|  .topbar-title{font-size:1.1rem;font-weight:600}
-    84|  .topbar-right{display:flex;align-items:center;gap:12px}
-    85|  .topbar-btn{padding:8px;border-radius:var(--radius-sm);color:var(--text-secondary);transition:all var(--transition)}
-    86|  .topbar-btn:hover{background:var(--bg-tertiary);color:var(--text-primary)}
-    87|  .topbar-btn svg{width:20px;height:20px}
-    88|  .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.85rem;cursor:pointer;position:relative}
-    89|  .avatar-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--dropdown-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--dropdown-shadow);min-width:200px;padding:8px;display:none;z-index:200}
-    90|  .avatar-dropdown.open{display:block}
-    91|  .avatar-dropdown-item{padding:10px 14px;border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:10px}
-    92|  .avatar-dropdown-item:hover{background:var(--bg-tertiary)}
-    93|  .dot{width:8px;height:8px;background:var(--accent);border-radius:50%;position:absolute;top:-1px;right:-1px;border:2px solid var(--topbar-bg)}
-    94|
-    95|  /* Screens */
-    96|  .screens-container{flex:1;overflow-y:auto;padding:28px 32px}
-    97|  .screen{display:none}
-    98|  .screen.active{display:block;animation:fadeSlideIn 0.3s ease}
-    99|  @keyframes fadeSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-   100|
-   101|  /* Cards */
-   102|  .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--card-shadow);backdrop-filter:blur(8px);transition:all var(--transition)}
-   103|  .card:hover{box-shadow:var(--card-shadow-hover)}
-   104|  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-   105|  .card-title{font-size:0.95rem;font-weight:600;color:var(--text-primary)}
-   106|
-   107|  /* KPI Grid */
-   108|  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-   109|  .kpi-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:20px 24px;box-shadow:var(--card-shadow);transition:all var(--transition);position:relative;overflow:hidden}
-   110|  .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--card-shadow-hover)}
-   111|  .kpi-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent-gradient);border-radius:4px 0 0 4px}
-   112|  .kpi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-   113|  .kpi-icon{width:40px;height:40px;border-radius:var(--radius);background:var(--kpi-icon-bg);display:flex;align-items:center;justify-content:center;color:var(--accent)}
-   114|  .kpi-icon svg{width:20px;height:20px}
-   115|  .kpi-value{font-size:1.75rem;font-weight:700;letter-spacing:-0.5px}
-   116|  .kpi-label{font-size:0.8rem;color:var(--text-secondary);margin-top:4px}
-   117|  .kpi-trend{font-size:0.75rem;font-weight:600;padding:2px 8px;border-radius:20px}
-   118|  .kpi-trend.up{color:var(--kpi-positive);background:rgba(16,185,129,0.1)}
-   119|  .kpi-trend.down{color:var(--kpi-negative);background:rgba(239,68,68,0.1)}
-   120|
-   121|  /* Charts */
-   122|  .charts-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:24px}
-   123|  .chart-box{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--card-shadow)}
-   124|  .chart-box canvas{max-height:280px}
-   125|  .chart-period{display:flex;gap:4px}
-   126|  .chart-period-btn{padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:500;color:var(--text-secondary);border:1px solid var(--border-color);transition:all var(--transition)}
-   127|  .chart-period-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-   128|
-   129|  /* Tables */
-   130|  .table-wrapper{overflow-x:auto}
-   131|  table{width:100%;border-collapse:collapse}
-   132|  th{text-align:left;padding:10px 16px;font-size:0.75rem;font-weight:600;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border-color);letter-spacing:0.5px}
-   133|  td{padding:12px 16px;font-size:0.9rem;border-bottom:1px solid var(--border-subtle)}
-   134|  tr:hover td{background:var(--table-hover)}
-   135|  .lead-name-cell{display:flex;align-items:center;gap:10px}
-   136|  .lead-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;flex-shrink:0}
-   137|  .lead-name{font-weight:500}
-   138|  .lead-company{font-size:0.8rem;color:var(--text-muted)}
-   139|  .status-badge{padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
-   140|  .status-badge.new{background:var(--badge-new-bg);color:var(--accent)}
-   141|  .status-badge.hot{background:var(--badge-hot-bg);color:var(--kpi-negative)}
-   142|  .status-badge.active{background:rgba(16,185,129,0.12);color:var(--kpi-positive)}
-   143|  .status-badge.followup{background:rgba(245,158,11,0.12);color:var(--status-lead)}
-   144|  .table-value{font-weight:600}
-   145|  .table-date{font-size:0.82rem;color:var(--text-muted)}
-   146|  .table-actions{display:flex;gap:4px}
-   147|  .table-action-btn{padding:6px;border-radius:var(--radius-sm);color:var(--text-muted);transition:all var(--transition)}
-   148|  .table-action-btn:hover{background:var(--bg-tertiary);color:var(--accent)}
-   149|  .table-action-btn svg{width:16px;height:16px}
-   150|
-   151|  /* Buttons */
-   152|  .btn{padding:8px 18px;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:500;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px}
-   153|  .btn-primary{background:var(--accent-gradient);color:#fff}
-   154|  .btn-primary:hover{box-shadow:0 4px 12px var(--accent-glow);transform:translateY(-1px)}
-   155|  .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color)}
-   156|  .btn-secondary:hover{background:var(--border-color)}
-   157|  .btn-danger{color:var(--kpi-negative)}
-   158|  .btn-danger:hover{background:rgba(239,68,68,0.1)}
-   159|  .btn-sm{padding:4px 10px;font-size:0.8rem}
-   160|  .btn-icon{padding:8px;border-radius:var(--radius-sm)}
-   161|
-   162|  /* Forms */
-   163|  .form-group{margin-bottom:16px}
-   164|  .form-label{display:block;font-size:0.82rem;font-weight:500;color:var(--text-secondary);margin-bottom:6px}
-   165|  .form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);transition:border var(--transition);font-size:0.9rem}
-   166|  .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-   167|  .form-textarea{resize:vertical;min-height:80px}
-   168|  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-   169|
-   170|  /* Modals */
-   171|  .modal-overlay{position:fixed;inset:0;background:var(--backdrop);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-   172|  .modal-overlay.open{display:flex}
-   173|  .modal{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-xl);padding:28px;width:90%;max-width:600px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:modalIn 0.2s ease}
-   174|  @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
-   175|  .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-   176|  .modal-title{font-size:1.15rem;font-weight:700}
-   177|  .modal-close{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all var(--transition)}
-   178|  .modal-close:hover{background:var(--bg-tertiary);color:var(--text-primary)}
-   179|  .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-subtle)}
-   180|  .modal-wide{max-width:800px}
-   181|
-   182|  /* Pipeline */
-   183|  .pipeline-container{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;min-height:calc(100vh - 200px)}
-   184|  .pipeline-column{min-width:240px;max-width:280px;flex:1;background:var(--bg-tertiary);border-radius:var(--radius-lg);padding:12px;display:flex;flex-direction:column}
-   185|  .pipeline-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 4px}
-   186|  .pipeline-col-title{font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-   187|  .pipeline-col-count{font-size:0.75rem;background:var(--bg-secondary);padding:2px 8px;border-radius:10px;font-weight:600}
-   188|  .pipeline-cards{flex:1;display:flex;flex-direction:column;gap:8px;min-height:60px}
-   189|  .pipeline-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:12px;cursor:grab;transition:all var(--transition);box-shadow:var(--card-shadow);border-left:3px solid var(--accent)}
-   190|  .pipeline-card:active{cursor:grabbing}
-   191|  .pipeline-card.dragging{opacity:0.5;transform:scale(0.95)}
-   192|  .pipeline-card-name{font-weight:600;font-size:0.9rem;margin-bottom:4px}
-   193|  .pipeline-card-budget{font-size:0.8rem;color:var(--text-muted);margin-bottom:6px}
-   194|  .pipeline-card-score{display:inline-flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:600}
-   195|  .score-dot{width:8px;height:8px;border-radius:50%}
-   196|  .score-dot.hot{background:var(--kpi-negative)}
-   197|  .score-dot.warm{background:var(--status-lead)}
-   198|  .score-dot.cold{background:var(--text-muted)}
-   199|
-   200|  /* AI Assistant */
-   201|  .ai-generator{display:grid;grid-template-columns:350px 1fr;gap:24px}
-   202|  .ai-controls{display:flex;flex-direction:column;gap:16px}
-   203|  .ai-result{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:24px;min-height:300px}
-   204|  .ai-message-card{background:var(--bg-tertiary);border-radius:var(--radius);padding:20px;margin-bottom:12px;position:relative}
-   205|  .ai-message-type{font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-   206|  .ai-message-text{font-size:0.95rem;line-height:1.6;white-space:pre-wrap}
-   207|  .ai-message-actions{display:flex;gap:8px;margin-top:12px}
-   208|  .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-   209|  .tone-btn{padding:10px;border:2px solid var(--border-color);border-radius:var(--radius);text-align:center;font-size:0.82rem;font-weight:500;transition:all var(--transition)}
-   210|  .tone-btn:hover{border-color:var(--accent)}
-   211|  .tone-btn.active{border-color:var(--accent);background:var(--sidebar-item-active);color:var(--accent)}
-   212|
-   213|  /* Calendar */
-   214|  .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-   215|  .calendar-header{text-align:center;font-size:0.75rem;font-weight:600;color:var(--text-muted);padding:8px}
-   216|  .calendar-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:0.85rem;cursor:pointer;transition:all var(--transition);position:relative}
-   217|  .calendar-day:hover{background:var(--bg-tertiary)}
-   218|  .calendar-day.today{background:var(--accent);color:#fff;font-weight:700}
-   219|  .calendar-day.has-event::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
-   220|  .calendar-day.today.has-event::after{background:#fff}
-   221|  .calendar-day.other-month{color:var(--text-muted);opacity:0.4}
-   222|
-   223|  /* Toasts */
-   224|  .toast-container{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px}
-   225|  .toast{padding:12px 20px;border-radius:var(--radius);font-size:0.9rem;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,0.15);animation:toastIn 0.3s ease;min-width:280px}
-   226|  .toast.success{background:#10b981;color:#fff}
-   227|  .toast.error{background:#ef4444;color:#fff}
-   228|  .toast.info{background:var(--tooltip-bg);color:#fff}
-   229|  @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-   230|
-   231|  /* Lead Detail */
-   232|  .detail-grid{display:grid;grid-template-columns:1fr 380px;gap:24px}
-   233|  .detail-section{margin-bottom:24px}
-   234|  .detail-section-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px}
-   235|  .comm-timeline{display:flex;flex-direction:column;gap:12px}
-   236|  .comm-item{display:flex;gap:12px;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);border-left:3px solid var(--accent)}
-   237|  .comm-item.inbound{border-left-color:var(--kpi-positive)}
-   238|  .comm-item.ai-generated{border-left-color:var(--pipeline-qualified)}
-   239|  .comm-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-   240|  .comm-content{flex:1}
-   241|  .comm-meta{font-size:0.75rem;color:var(--text-muted);margin-bottom:4px}
-   242|  .comm-text{font-size:0.9rem}
-   243|
-   244|  /* Search */
-   245|  .search-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-   246|  .search-input{flex:1;min-width:200px}
-   247|
-   248|  /* Responsive */
-   249|  @media(max-width:1200px){
-   250|    .kpi-grid{grid-template-columns:repeat(2,1fr)}
-   251|    .charts-grid{grid-template-columns:1fr 1fr}
-   252|    .ai-generator{grid-template-columns:1fr}
-   253|    .detail-grid{grid-template-columns:1fr}
-   254|  }
-   255|  @media(max-width:768px){
-   256|    .sidebar{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%)}
-   257|    .sidebar.mobile-open{transform:translateX(0)}
-   258|    .sidebar-overlay{display:none;position:fixed;inset:0;background:var(--backdrop);z-index:99}
-   259|    .sidebar-overlay.show{display:block}
-   260|    .hamburger{display:block}
-   261|    .kpi-grid{grid-template-columns:1fr 1fr}
-   262|    .charts-grid{grid-template-columns:1fr}
-   263|    .screens-container{padding:16px}
-   264|    .topbar{padding:0 16px}
-   265|    .pipeline-container{flex-direction:column}
-   266|    .pipeline-column{max-width:100%}
-   267|    .form-row{grid-template-columns:1fr}
-   268|  }
-   269|
-   270|  /* Tabs */
-   271|  .tabs{display:flex;gap:0;border-bottom:2px solid var(--border-color);margin-bottom:20px}
-   272|  .tab{padding:10px 20px;font-size:0.9rem;font-weight:500;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all var(--transition)}
-   273|  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-   274|  .tab:hover{color:var(--text-primary)}
-   275|
-   276|  /* Empty state */
-   277|  .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
-   278|  .empty-state svg{width:64px;height:64px;margin-bottom:16px;opacity:0.4}
-   279|  .empty-state-title{font-size:1.1rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px}
-   280|  .empty-state-desc{font-size:0.9rem;margin-bottom:20px}
-   281|
-   282|  /* Info grid */
-   283|  .info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-   284|  .info-item{display:flex;flex-direction:column;gap:2px}
-   285|  .info-label{font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;font-weight:600}
-   286|  .info-value{font-size:0.9rem;font-weight:500}
-   287|
-   288|  /* Page header */
-   289|  .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-   290|  .page-header h2{font-size:1.4rem;font-weight:700}
-   291|  .page-actions{display:flex;gap:8px}
-   292|
-   293|  /* Marketing copy area */
-   294|  .copy-highlight{background:var(--bg-tertiary);padding:16px;border-radius:var(--radius);border:1px solid var(--border-color);font-size:0.9rem;line-height:1.6;white-space:pre-wrap;margin:12px 0}
-   295|</style>
-   296|</head>
-   297|<body>
-   298|<div class="app-layout">
-   299|  <!-- SIDEBAR -->
-   300|  <aside class="sidebar" id="sidebar">
-   301|    <div class="sidebar-logo">
-   302|      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-   303|      <span>LeadFlow AI</span>
-   304|    </div>
-   305|    <nav class="sidebar-nav">
-   306|      <div class="sidebar-nav-item active" data-screen="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</div>
-   307|      <div class="sidebar-nav-item" data-screen="leads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Leads <span class="badge" id="leadsCount">0</span></div>
-   308|      <div class="sidebar-nav-item" data-screen="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Pipeline</div>
-   309|      <div class="sidebar-nav-item" data-screen="ai-assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> AI Assistant</div>
-   310|      <div class="sidebar-nav-item" data-screen="appointments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Appointments</div>
-   311|      <div class="sidebar-nav-item" data-screen="campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg> Campaigns</div>
-   312|      <div class="sidebar-nav-item" data-screen="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Analytics</div>
-   313|      <div class="sidebar-nav-item" data-screen="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</div>
-   314|    </nav>
-   315|    <div class="sidebar-footer">
-   316|      <div style="font-size:0.75rem;color:var(--text-muted);text-align:center">LeadFlow AI v1.0</div>
-   317|    </div>
-   318|  </aside>
-   319|  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-   320|
-   321|  <!-- MAIN -->
-   322|  <main class="main">
-   323|    <!-- Topbar -->
-   324|    <header class="topbar">
-   325|      <div class="topbar-left">
-   326|        <button class="hamburger" id="hamburgerBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-   327|        <span class="topbar-title" id="topbarTitle">Dashboard</span>
-   328|      </div>
-   329|      <div class="topbar-right">
-   330|        <button class="topbar-btn" id="themeToggle" title="Toggle theme"><span id="themeIcon">🌙</span></button>
-   331|        <div class="user-avatar" id="avatarBtn" onclick="document.getElementById('avatarDropdownTop').classList.toggle('open')">AM<span class="dot"></span>
-   332|          <div class="avatar-dropdown" id="avatarDropdownTop">
-   333|            <div class="avatar-dropdown-item" onclick="navigateTo('settings')">⚙️ Account Settings</div>
-   334|            <div class="avatar-dropdown-item" onclick="authLogout()">🚪 Sign Out</div>
-   335|          </div>
-   336|        </div>
-   337|      </div>
-   338|    </header>
-   339|
-   340|    <!-- Screens Container -->
-   341|    <div class="screens-container" id="screensContainer">
-   342|
-   343|      <!-- ===== DASHBOARD SCREEN ===== -->
-   344|      <div class="screen active" id="screen-dashboard">
-   345|        <div class="kpi-grid">
-   346|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg></div><span class="kpi-trend up">▲ 12%</span></div><div class="kpi-value" id="kpiNewLeads">0</div><div class="kpi-label">New Leads Today</div></div>
-   347|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="kpi-trend up">▲ 8%</span></div><div class="kpi-value" id="kpiActive">0</div><div class="kpi-label">Active Conversations</div></div>
-   348|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="kpi-trend down">▼ 3%</span></div><div class="kpi-value" id="kpiFollowups">0</div><div class="kpi-label">Upcoming Follow-Ups</div></div>
-   349|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div><span class="kpi-trend up">▲ 5%</span></div><div class="kpi-value" id="kpiAppts">0</div><div class="kpi-label">Appointments Scheduled</div></div>
-   350|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="kpi-trend up">▲ 18%</span></div><div class="kpi-value" id="kpiContract">0</div><div class="kpi-label">Under Contract</div></div>
-   351|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="kpi-trend up">▲ 22%</span></div><div class="kpi-value" id="kpiClosed">0</div><div class="kpi-label">Closed This Month</div></div>
-   352|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="kpi-trend up">▲ 14%</span></div><div class="kpi-value" id="kpiRevenue">$0</div><div class="kpi-label">Monthly Revenue</div></div>
-   353|          <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><span class="kpi-trend up" id="kpiConvTrend">▲ 0%</span></div><div class="kpi-value" id="kpiConvRate">0%</div><div class="kpi-label">Conversion Rate</div></div>
-   354|        </div>
-   355|
-   356|        <div class="charts-grid">
-   357|          <div class="chart-box"><div class="card-header"><span class="card-title">Performance Trend</span><div class="chart-period"><button class="chart-period-btn active" data-period="30">30d</button><button class="chart-period-btn" data-period="90">90d</button><button class="chart-period-btn" data-period="365">1Y</button></div></div><canvas id="chartMonthlyTrend"></canvas></div>
-   358|          <div class="chart-box"><div class="card-header"><span class="card-title">Pipeline Distribution</span></div><canvas id="chartPipeline"></canvas></div>
-   359|          <div class="chart-box"><div class="card-header"><span class="card-title">Lead Sources</span></div><canvas id="chartLeadSources"></canvas></div>
-   360|        </div>
-   361|
-   362|        <div class="card">
-   363|          <div class="card-header"><span class="card-title">Recent Leads</span><button class="btn btn-sm btn-secondary" onclick="navigateTo('leads')">View All</button></div>
-   364|          <div class="table-wrapper"><table><thead><tr><th>Lead</th><th>Source</th><th>Status</th><th>Budget</th><th>Score</th><th>Last Contact</th><th></th></tr></thead><tbody id="recentLeadsTable"></tbody></table></div>
-   365|        </div>
-   366|      </div>
-   367|
-   368|      <!-- ===== LEADS SCREEN ===== -->
-   369|      <div class="screen" id="screen-leads">
-   370|        <div class="page-header"><h2>Lead Management</h2><div class="page-actions"><button class="btn btn-primary" onclick="openLeadModal()">+ Add Lead</button></div></div>
-   371|        <div class="card" style="margin-bottom:20px">
-   372|          <div class="search-bar">
-   373|            <input class="form-input search-input" id="leadSearch" placeholder="Search leads by name, email, or phone..." oninput="loadLeads()">
-   374|            <select class="form-select" id="leadStageFilter" onchange="loadLeads()" style="width:160px">
-   375|              <option value="">All Stages</option>
-   376|              <option value="new_lead">New Lead</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option>
-   377|              <option value="showing_scheduled">Showing Scheduled</option><option value="offer_submitted">Offer Submitted</option>
-   378|              <option value="under_contract">Under Contract</option><option value="closed">Closed</option><option value="lost">Lost</option>
-   379|            </select>
-   380|            <select class="form-select" id="leadScoreFilter" onchange="loadLeads()" style="width:140px">
-   381|              <option value="">All Scores</option><option value="hot">🔥 Hot (70+)</option><option value="warm">🟡 Warm (40-69)</option><option value="cold">🔵 Cold (&lt;40)</option>
-   382|            </select>
-   383|          </div>
-   384|        </div>
-   385|        <div class="card"><div class="table-wrapper"><table><thead><tr><th>Lead</th><th>Phone</th><th>Property Interest</th><th>Location</th><th>Stage</th><th>Score</th><th>Last Contacted</th><th></th></tr></thead><tbody id="leadsTableBody"></tbody></table></div></div>
-   386|        <div class="empty-state" id="leadsEmpty" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div class="empty-state-title">No leads found</div><div class="empty-state-desc">Add your first lead to get started</div><button class="btn btn-primary" onclick="openLeadModal()">+ Add Lead</button></div>
-   387|      </div>
-   388|
-   389|      <!-- ===== LEAD DETAIL SCREEN ===== -->
-   390|      <div class="screen" id="screen-lead-detail">
-   391|        <div class="page-header"><button class="btn btn-secondary" onclick="navigateTo('leads')">← Back to Leads</button><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="reScoreLead()">🔄 Re-score</button><button class="btn btn-secondary btn-sm" onclick="deleteCurrentLead()">🗑 Delete</button></div></div>
-   392|        <div class="detail-grid">
-   393|          <div class="detail-main">
-   394|            <div class="card detail-section">
-   395|              <div class="detail-section-title">Lead Profile</div>
-   396|              <div class="info-grid" id="leadDetailInfo"></div>
-   397|            </div>
-   398|            <div class="card detail-section">
-   399|              <div class="detail-section-title">Communication History</div>
-   400|              <div class="comm-timeline" id="leadDetailComms"><div style="text-align:center;color:var(--text-muted);padding:20px">No communications yet</div></div>
-   401|              <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="openAddComm()">+ Log Communication</button>
-   402|            </div>
-   403|          </div>
-   404|          <div class="detail-sidebar">
-   405|            <div class="card detail-section"><div class="detail-section-title">Appointments</div><div id="leadDetailAppts"><div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.9rem">No appointments</div></div></div>
-   406|            <div class="card detail-section"><div class="detail-section-title">AI Actions</div>
-   407|              <button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:8px" onclick="navigateToAiFromLead()">🤖 Generate Follow-up</button>
-   408|              <button class="btn btn-secondary btn-sm" style="width:100%" onclick="scheduleFromLead()">📅 Schedule Appointment</button>
-   409|            </div>
-   410|          </div>
-   411|        </div>
-   412|      </div>
-   413|
-   414|      <!-- ===== PIPELINE SCREEN ===== -->
-   415|      <div class="screen" id="screen-pipeline">
-   416|        <div class="page-header"><h2>Pipeline View</h2></div>
-   417|        <div class="pipeline-container" id="pipelineContainer"></div>
-   418|      </div>
-   419|
-   420|      <!-- ===== AI ASSISTANT SCREEN ===== -->
-   421|      <div class="screen" id="screen-ai-assistant">
-   422|        <div class="page-header"><h2>AI Follow-Up Assistant</h2></div>
-   423|        <div class="ai-generator">
-   424|          <div class="ai-controls">
-   425|            <div class="card">
-   426|              <div class="card-title" style="margin-bottom:12px">Lead</div>
-   427|              <select class="form-select" id="aiLeadSelect"><option value="">Select a lead...</option></select>
-   428|            </div>
-   429|            <div class="card">
-   430|              <div class="card-title" style="margin-bottom:12px">Message Type</div>
-   431|              <select class="form-select" id="aiMsgType">
-   432|                <option value="sms_followup">SMS Follow-up</option><option value="email_followup">Email Follow-up</option>
-   433|                <option value="call_script">Call Script</option><option value="cold_reengage">Cold Re-engage</option>
-   434|                <option value="appointment_reminder">Appointment Reminder</option>
-   435|                <option value="property_update">Property Update</option>
-   436|              </select>
-   437|            </div>
-   438|            <div class="card">
-   439|              <div class="card-title" style="margin-bottom:12px">Tone</div>
-   440|              <div class="tone-grid">
-   441|                <button class="tone-btn active" data-tone="professional">💼 Professional</button>
-   442|                <button class="tone-btn" data-tone="friendly">😊 Friendly</button>
-   443|                <button class="tone-btn" data-tone="urgent">⚡ Urgent</button>
-   444|                <button class="tone-btn" data-tone="casual">✌️ Casual</button>
-   445|              </div>
-   446|            </div>
-   447|            <button class="btn btn-primary" onclick="generateAI()" style="width:100%;justify-content:center;padding:14px">✨ Generate Message</button>
-   448|          </div>
-   449|          <div class="ai-result" id="aiResult"><div style="text-align:center;color:var(--text-muted);padding:40px;font-size:1.1rem">Select a lead and generate an AI-powered message</div></div>
-   450|        </div>
-   451|      </div>
-   452|
-   453|      <!-- ===== APPOINTMENTS SCREEN ===== -->
-   454|      <div class="screen" id="screen-appointments">
-   455|        <div class="page-header"><h2>Appointments</h2><button class="btn btn-primary" onclick="openApptModal()">+ Schedule</button></div>
-   456|        <div style="display:grid;grid-template-columns:320px 1fr;gap:24px">
-   457|          <div class="card"><div class="card-title" style="margin-bottom:12px">Calendar</div><div id="calendarWidget"></div></div>
-   458|          <div class="card"><div class="card-title" style="margin-bottom:12px">Upcoming Appointments</div><div id="appointmentsList"><div style="text-align:center;color:var(--text-muted);padding:20px">Loading...</div></div></div>
-   459|        </div>
-   460|      </div>
-   461|
-   462|      <!-- ===== CAMPAIGNS SCREEN ===== -->
-   463|      <div class="screen" id="screen-campaigns">
-   464|        <div class="page-header"><h2>Campaigns</h2><button class="btn btn-primary" onclick="openCampaignModal()">+ New Campaign</button></div>
-   465|        <div class="table-wrapper card"><table><thead><tr><th>Campaign</th><th>Type</th><th>Status</th><th>Sent</th><th>Opened</th><th>Clicked</th><th>Created</th><th></th></tr></thead><tbody id="campaignsTable"></tbody></table></div>
-   466|      </div>
-   467|
-   468|      <!-- ===== ANALYTICS SCREEN ===== -->
-   469|      <div class="screen" id="screen-analytics">
-   470|        <div class="page-header"><h2>Analytics & Reports</h2></div>
-   471|        <div class="kpi-grid" style="margin-bottom:24px">
-   472|          <div class="kpi-card"><div class="kpi-value" id="anaTotalLeads">0</div><div class="kpi-label">Total Leads</div></div>
-   473|          <div class="kpi-card"><div class="kpi-value" id="anaAvgScore">0</div><div class="kpi-label">Avg AI Score</div></div>
-   474|          <div class="kpi-card"><div class="kpi-value" id="anaResponseRate">0%</div><div class="kpi-label">Response Rate</div></div>
-   475|          <div class="kpi-card"><div class="kpi-value" id="anaRevenue">$0</div><div class="kpi-label">Total Revenue</div></div>
-   476|        </div>
-   477|        <div class="charts-grid">
-   478|          <div class="chart-box"><div class="card-title" style="margin-bottom:12px">Conversion Funnel</div><canvas id="chartFunnel"></canvas></div>
-   479|          <div class="chart-box"><div class="card-title" style="margin-bottom:12px">Lead Source ROI</div><canvas id="chartSourceROI"></canvas></div>
-   480|        </div>
-   481|        <div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:12px">Lead Source Breakdown</div><div class="table-wrapper"><table id="sourceTable"></table></div></div>
-   482|      </div>
-   483|
-   484|      <!-- ===== SETTINGS SCREEN ===== -->
-   485|      <div class="screen" id="screen-settings">
-   486|        <div class="page-header"><h2>Settings</h2></div>
-   487|        <div class="tabs">
-   488|          <button class="tab active" onclick="settingsTab('profile',this)">Profile</button>
-   489|          <button class="tab" onclick="settingsTab('subscription',this)">Subscription</button>
-   490|          <button class="tab" onclick="settingsTab('integrations',this)">Integrations</button>
-   491|        </div>
-   492|        <div id="settingsProfile"><div class="card" style="max-width:600px">
-   493|          <div class="card-title" style="margin-bottom:20px">Account Profile</div>
-   494|          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="setName" value="Alex Morgan"></div>
-   495|          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="setEmail" value="demo@leadflow.ai"></div>
-   496|          <div class="form-group"><label class="form-label">Role</label><input class="form-input" id="setRole" disabled></div>
-   497|          <div class="form-group"><label class="form-label">Current Plan</label><input class="form-input" id="setPlan" disabled></div>
-   498|          <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
-   499|        </div></div>
-   500|        <div id="settingsSubscription" style="display:none"><div class="card" style="max-width:600px">
-   501|          <div class="card-title" style="margin-bottom:20px">Subscription Management</div>
-   502|          <p style="color:var(--text-secondary);margin-bottom:16px">Manage your LeadFlow AI subscription and billing.</p>
-   503|          <div class="info-grid" id="subInfo"></div>
-   504|          <a href="/pricing.html" target="_blank" class="btn btn-primary" style="margin-top:16px">Upgrade Plan</a>
-   505|        </div></div>
-   506|        <div id="settingsIntegrations" style="display:none"><div class="card" style="max-width:600px">
-   507|          <div class="card-title" style="margin-bottom:20px">Integrations</div>
-   508|          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-   509|            <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">📅 Google Calendar</div><span class="status-badge active">Connected</span></div>
-   510|            <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">📧 Outlook Calendar</div><span class="status-badge new">Not Connected</span></div>
-   511|            <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">💬 SMS (Twilio)</div><span class="status-badge active">Connected</span></div>
-   512|            <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">💳 Stripe</div><span class="status-badge active">Connected</span></div>
-   513|          </div>
-   514|        </div></div>
-   515|      </div>
-   516|    </div>
-   517|  </main>
-   518|</div>
-   519|
-   520|<!-- MODALS -->
-   521|<div class="modal-overlay" id="leadModal">
-   522|  <div class="modal"><div class="modal-header"><span class="modal-title" id="leadModalTitle">Add Lead</span><button class="modal-close" onclick="closeModal('leadModal')">✕</button></div>
-   523|    <div class="form-row"><div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="leadFormName"></div><div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="leadFormPhone"></div></div>
-   524|    <div class="form-row"><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="leadFormEmail"></div><div class="form-group"><label class="form-label">Lead Source</label><select class="form-select" id="leadFormSource"><option>Website</option><option>Referral</option><option>Zillow</option><option>Open House</option><option>Social Media</option><option>Cold Call</option><option>Other</option></select></div></div>
-   525|    <div class="form-row"><div class="form-group"><label class="form-label">Property Interest</label><input class="form-input" id="leadFormProperty"></div><div class="form-group"><label class="form-label">Preferred Location</label><input class="form-input" id="leadFormLocation"></div></div>
-   526|    <div class="form-row"><div class="form-group"><label class="form-label">Budget Min ($)</label><input class="form-input" id="leadFormBudgetMin" type="number"></div><div class="form-group"><label class="form-label">Budget Max ($)</label><input class="form-input" id="leadFormBudgetMax" type="number"></div></div>
-   527|    <div class="form-row"><div class="form-group"><label class="form-label">Timeline</label><select class="form-select" id="leadFormTimeline"><option>Immediate</option><option>1-3 Months</option><option>3-6 Months</option><option>6-12 Months</option><option>Just Researching</option></select></div><div class="form-group"><label class="form-label">Stage</label><select class="form-select" id="leadFormStage"><option value="new_lead">New Lead</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="showing_scheduled">Showing Scheduled</option></select></div></div>
-   528|    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="leadFormNotes"></textarea></div>
-   529|    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('leadModal')">Cancel</button><button class="btn btn-primary" onclick="saveLead()">Save Lead</button></div>
-   530|  </div>
-   531|</div>
-   532|
-   533|<div class="modal-overlay" id="commModal">
-   534|  <div class="modal"><div class="modal-header"><span class="modal-title">Log Communication</span><button class="modal-close" onclick="closeModal('commModal')">✕</button></div>
-   535|    <div class="form-row"><div class="form-group"><label class="form-label">Channel</label><select class="form-select" id="commChannel"><option>SMS</option><option>Email</option><option>Call</option><option>Note</option></select></div><div class="form-group"><label class="form-label">Direction</label><select class="form-select" id="commDirection"><option value="outbound">Outbound</option><option value="inbound">Inbound</option></select></div></div>
-   536|    <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="commContent"></textarea></div>
-   537|    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('commModal')">Cancel</button><button class="btn btn-primary" onclick="saveComm()">Save</button></div>
-   538|  </div>
-   539|</div>
-   540|
-   541|<div class="modal-overlay" id="apptModal">
-   542|  <div class="modal"><div class="modal-header"><span class="modal-title">Schedule Appointment</span><button class="modal-close" onclick="closeModal('apptModal')">✕</button></div>
-   543|    <div class="form-group"><label class="form-label">Lead</label><select class="form-select" id="apptLeadSelect"></select></div>
-   544|    <div class="form-row"><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="apptType"><option>Showing</option><option>Consultation</option><option>Open House</option><option>Callback</option></select></div><div class="form-group"><label class="form-label">Title</label><input class="form-input" id="apptTitle" value="Property Showing"></div></div>
-   545|    <div class="form-row"><div class="form-group"><label class="form-label">Date & Time</label><input class="form-input" id="apptStart" type="datetime-local"></div><div class="form-group"><label class="form-label">End Time</label><input class="form-input" id="apptEnd" type="datetime-local"></div></div>
-   546|    <div class="form-group"><label class="form-label">Location / Notes</label><textarea class="form-textarea" id="apptNotes"></textarea></div>
-   547|    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('apptModal')">Cancel</button><button class="btn btn-primary" onclick="saveAppointment()">Schedule</button></div>
-   548|  </div>
-   549|</div>
-   550|
-   551|<div class="modal-overlay" id="campaignModal">
-   552|  <div class="modal"><div class="modal-header"><span class="modal-title">Create Campaign</span><button class="modal-close" onclick="closeModal('campaignModal')">✕</button></div>
-   553|    <div class="form-row"><div class="form-group"><label class="form-label">Campaign Name</label><input class="form-input" id="campName"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="campType"><option value="email">Email</option><option value="sms">SMS</option><option value="social">Social Media</option></select></div></div>
-   554|    <div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="campSubject"></div>
-   555|    <div class="form-group"><label class="form-label">Content</label><textarea class="form-textarea" id="campContent" style="min-height:150px"></textarea></div>
-   556|    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('campaignModal')">Cancel</button><button class="btn btn-primary" onclick="saveCampaign()">Create</button></div>
-   557|  </div>
-   558|</div>
-   559|
-   560|<div class="toast-container" id="toastContainer"></div>
-   561|<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-   562|
-   563|<script>
-   564|/* ================================================================
-   565|   LEADFLOW AI — Complete Frontend Logic
-   566|   ================================================================ */
-   567|const API = '/api';
-   568|let currentScreen = 'dashboard';
-   569|let currentLeadId = null;
-   570|let allLeads = [];
-   571|let currentUser = null;
-   572|let chartInstances = {};
-   573|let calYear, calMonth;
-   574|
-   575|const STAGE_LABELS = {new_lead:'New Lead',contacted:'Contacted',qualified:'Qualified',showing_scheduled:'Showing Scheduled',offer_submitted:'Offer Submitted',under_contract:'Under Contract',closed:'Closed',lost:'Lost'};
-   576|const SCREEN_TITLES = {dashboard:'Dashboard',leads:'Leads',pipeline:'Pipeline','ai-assistant':'AI Assistant',appointments:'Appointments',campaigns:'Campaigns',analytics:'Analytics',settings:'Settings','lead-detail':'Lead Detail'};
-   577|
-   578|// XSS Protection: escape HTML entities
-   579|function esc(s) { if (!s && s !== 0) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-   580|
-   581|// === Auth ===
-   582|function getHeaders(){const t=localStorage.getItem('leadflow_token');const h={'Content-Type':'application/json'};if(t)h['Authorization']='Bearer '+t;return h}
-   583|async function apiFetch(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...getHeaders(),...(opt.headers||{})}});if(r.status===401){localStorage.removeItem('leadflow_token');showToast('Session expired','error')}return r}
-   584|
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>LeadFlow AI - Real Estate Lead Nurturing CRM</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+     <style>
+      :root {
+        --bg-primary: #f8fafc; --bg-secondary: #ffffff; --bg-tertiary: #f1f5f9;
+        --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
+        --border-color: #e2e8f0; --border-subtle: #f1f5f9;
+        --accent: #0ea5e9; --accent-hover: #0284c7;
+        --accent-gradient: linear-gradient(135deg, #0ea5e9, #06b6d4);
+        --accent-glow: rgba(14,165,233,0.25);
+        --card-bg: rgba(255,255,255,0.8); --card-border: rgba(226,232,240,0.8);
+        --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+        --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+        --sidebar-bg: #ffffff; --sidebar-border: #e2e8f0;
+        --sidebar-item-hover: #f1f5f9; --sidebar-item-active: rgba(14,165,233,0.1);
+        --topbar-bg: rgba(255,255,255,0.85); --kpi-icon-bg: rgba(14,165,233,0.1);
+        --kpi-positive: #10b981; --kpi-negative: #ef4444; --chart-grid: #e2e8f0;
+        --dropdown-bg: #ffffff; --dropdown-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        --table-stripe: #f8fafc; --table-hover: #f0f9ff;
+        --status-lead: #f59e0b; --status-active: #10b981; --status-closed: #6b7280;
+        --badge-new-bg: rgba(14,165,233,0.12); --badge-hot-bg: rgba(239,68,68,0.12);
+        --tooltip-bg: #0f172a; --skeleton: #e2e8f0; --skeleton-shine: #f1f5f9;
+        --backdrop: rgba(15,23,42,0.3); --glass-blur: 12px;
+        --radius-sm: 6px; --radius: 10px; --radius-lg: 14px; --radius-xl: 18px;
+        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --sidebar-width: 260px; --topbar-height: 64px;
+        --gold: #d4a853; --gold-light: #f0d78c;
+        --pipeline-new: #6366f1; --pipeline-contacted: #8b5cf6; --pipeline-qualified: #0ea5e9;
+        --pipeline-showing: #06b6d4; --pipeline-offer: #f59e0b; --pipeline-contract: #10b981;
+        --pipeline-closed: #6b7280; --pipeline-lost: #ef4444;
+      }
+      .dark {
+        --bg-primary: #0b1120; --bg-secondary: #111827; --bg-tertiary: #1e293b;
+        --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
+        --border-color: #1e293b; --border-subtle: #1a2332;
+        --card-bg: rgba(30,41,59,0.7); --card-border: rgba(51,65,85,0.6);
+        --card-shadow: 0 1px 3px rgba(0,0,0,0.2); --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.3);
+        --sidebar-bg: #0f172a; --sidebar-border: #1e293b;
+        --sidebar-item-hover: #1e293b; --sidebar-item-active: rgba(14,165,233,0.15);
+        --topbar-bg: rgba(15,23,42,0.85); --kpi-icon-bg: rgba(14,165,233,0.15);
+        --chart-grid: #334155; --dropdown-bg: #1e293b;
+        --dropdown-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        --table-stripe: #111827; --table-hover: #0f2a3f;
+        --badge-new-bg: rgba(14,165,233,0.2); --badge-hot-bg: rgba(239,68,68,0.2);
+        --tooltip-bg: #334155; --skeleton: #1e293b; --skeleton-shine: #334155;
+        --backdrop: rgba(0,0,0,0.5);
+      }
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      html{font-size:15px;scroll-behavior:smooth}
+      body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.5;transition:background var(--transition),color var(--transition);overflow:hidden;height:100vh}
+      a{color:var(--accent);text-decoration:none}
+      button{cursor:pointer;font-family:inherit;border:none;background:none}
+      input,select,textarea{font-family:inherit;font-size:inherit}
+      ::-webkit-scrollbar{width:6px}
+      ::-webkit-scrollbar-track{background:transparent}
+      ::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+    
+      /* Layout */
+      .app-layout{display:flex;height:100vh;overflow:hidden}
+      .sidebar{width:var(--sidebar-width);min-width:var(--sidebar-width);background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column;z-index:100;transition:transform 0.3s ease}
+      .sidebar-logo{padding:20px 24px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border-subtle)}
+      .sidebar-logo svg{width:32px;height:32px;color:var(--accent)}
+      .sidebar-logo span{font-size:1.25rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+      .sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+      .sidebar-nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;color:var(--text-secondary);font-size:0.9rem;font-weight:500;cursor:pointer;position:relative;transition:all var(--transition);border-left:3px solid transparent}
+      .sidebar-nav-item:hover{background:var(--sidebar-item-hover);color:var(--text-primary)}
+      .sidebar-nav-item.active{color:var(--accent);background:var(--sidebar-item-active);border-left-color:var(--accent)}
+      .sidebar-nav-item svg{width:20px;height:20px;flex-shrink:0}
+      .sidebar-nav-item .badge{background:var(--accent);color:#fff;font-size:0.7rem;padding:1px 7px;border-radius:10px;margin-left:auto}
+      .sidebar-footer{padding:16px 24px;border-top:1px solid var(--border-subtle)}
+    
+      /* Main */
+      .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+      .topbar{height:var(--topbar-height);min-height:var(--topbar-height);background:var(--topbar-bg);backdrop-filter:blur(var(--glass-blur));border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:50}
+      .topbar-left{display:flex;align-items:center;gap:16px}
+      .hamburger{display:none;padding:8px;border-radius:var(--radius-sm)}
+      .topbar-title{font-size:1.1rem;font-weight:600}
+      .topbar-right{display:flex;align-items:center;gap:12px}
+      .topbar-btn{padding:8px;border-radius:var(--radius-sm);color:var(--text-secondary);transition:all var(--transition)}
+      .topbar-btn:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+      .topbar-btn svg{width:20px;height:20px}
+      .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.85rem;cursor:pointer;position:relative}
+      .avatar-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--dropdown-bg);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--dropdown-shadow);min-width:200px;padding:8px;display:none;z-index:200}
+      .avatar-dropdown.open{display:block}
+      .avatar-dropdown-item{padding:10px 14px;border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.9rem;cursor:pointer;display:flex;align-items:center;gap:10px}
+      .avatar-dropdown-item:hover{background:var(--bg-tertiary)}
+      .dot{width:8px;height:8px;background:var(--accent);border-radius:50%;position:absolute;top:-1px;right:-1px;border:2px solid var(--topbar-bg)}
+    
+      /* Screens */
+      .screens-container{flex:1;overflow-y:auto;padding:28px 32px}
+      .screen{display:none}
+      .screen.active{display:block;animation:fadeSlideIn 0.3s ease}
+      @keyframes fadeSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+   
+     /* Cards */
+     .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--card-shadow);backdrop-filter:blur(8px);transition:all var(--transition)}
+     .card:hover{box-shadow:var(--card-shadow-hover)}
+     .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+     .card-title{font-size:0.95rem;font-weight:600;color:var(--text-primary)}
+   
+     /* KPI Grid */
+     .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+     .kpi-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:20px 24px;box-shadow:var(--card-shadow);transition:all var(--transition);position:relative;overflow:hidden}
+     .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--card-shadow-hover)}
+     .kpi-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent-gradient);border-radius:4px 0 0 4px}
+     .kpi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+     .kpi-icon{width:40px;height:40px;border-radius:var(--radius);background:var(--kpi-icon-bg);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+     .kpi-icon svg{width:20px;height:20px}
+     .kpi-value{font-size:1.75rem;font-weight:700;letter-spacing:-0.5px}
+     .kpi-label{font-size:0.8rem;color:var(--text-secondary);margin-top:4px}
+     .kpi-trend{font-size:0.75rem;font-weight:600;padding:2px 8px;border-radius:20px}
+     .kpi-trend.up{color:var(--kpi-positive);background:rgba(16,185,129,0.1)}
+     .kpi-trend.down{color:var(--kpi-negative);background:rgba(239,68,68,0.1)}
+   
+     /* Charts */
+     .charts-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:24px}
+     .chart-box{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--card-shadow)}
+     .chart-box canvas{max-height:280px}
+     .chart-period{display:flex;gap:4px}
+     .chart-period-btn{padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:500;color:var(--text-secondary);border:1px solid var(--border-color);transition:all var(--transition)}
+     .chart-period-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+   
+     /* Tables */
+     .table-wrapper{overflow-x:auto}
+     table{width:100%;border-collapse:collapse}
+     th{text-align:left;padding:10px 16px;font-size:0.75rem;font-weight:600;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border-color);letter-spacing:0.5px}
+     td{padding:12px 16px;font-size:0.9rem;border-bottom:1px solid var(--border-subtle)}
+     tr:hover td{background:var(--table-hover)}
+     .lead-name-cell{display:flex;align-items:center;gap:10px}
+     .lead-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;flex-shrink:0}
+     .lead-name{font-weight:500}
+     .lead-company{font-size:0.8rem;color:var(--text-muted)}
+     .status-badge{padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
+     .status-badge.new{background:var(--badge-new-bg);color:var(--accent)}
+     .status-badge.hot{background:var(--badge-hot-bg);color:var(--kpi-negative)}
+     .status-badge.active{background:rgba(16,185,129,0.12);color:var(--kpi-positive)}
+     .status-badge.followup{background:rgba(245,158,11,0.12);color:var(--status-lead)}
+     .table-value{font-weight:600}
+     .table-date{font-size:0.82rem;color:var(--text-muted)}
+     .table-actions{display:flex;gap:4px}
+     .table-action-btn{padding:6px;border-radius:var(--radius-sm);color:var(--text-muted);transition:all var(--transition)}
+     .table-action-btn:hover{background:var(--bg-tertiary);color:var(--accent)}
+     .table-action-btn svg{width:16px;height:16px}
+   
+     /* Buttons */
+     .btn{padding:8px 18px;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:500;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px}
+     .btn-primary{background:var(--accent-gradient);color:#fff}
+     .btn-primary:hover{box-shadow:0 4px 12px var(--accent-glow);transform:translateY(-1px)}
+     .btn-secondary{background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color)}
+     .btn-secondary:hover{background:var(--border-color)}
+     .btn-danger{color:var(--kpi-negative)}
+     .btn-danger:hover{background:rgba(239,68,68,0.1)}
+     .btn-sm{padding:4px 10px;font-size:0.8rem}
+     .btn-icon{padding:8px;border-radius:var(--radius-sm)}
+   
+     /* Forms */
+     .form-group{margin-bottom:16px}
+     .form-label{display:block;font-size:0.82rem;font-weight:500;color:var(--text-secondary);margin-bottom:6px}
+     .form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);transition:border var(--transition);font-size:0.9rem}
+     .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+     .form-textarea{resize:vertical;min-height:80px}
+     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+   
+     /* Modals */
+     .modal-overlay{position:fixed;inset:0;background:var(--backdrop);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+     .modal-overlay.open{display:flex}
+     .modal{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-xl);padding:28px;width:90%;max-width:600px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:modalIn 0.2s ease}
+     @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+     .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+     .modal-title{font-size:1.15rem;font-weight:700}
+     .modal-close{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all var(--transition)}
+     .modal-close:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+     .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-subtle)}
+     .modal-wide{max-width:800px}
+   
+     /* Pipeline */
+     .pipeline-container{display:flex;gap:12px;overflow-x:auto;padding-bottom:16px;min-height:calc(100vh - 200px)}
+     .pipeline-column{min-width:240px;max-width:280px;flex:1;background:var(--bg-tertiary);border-radius:var(--radius-lg);padding:12px;display:flex;flex-direction:column}
+     .pipeline-col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 4px}
+     .pipeline-col-title{font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+     .pipeline-col-count{font-size:0.75rem;background:var(--bg-secondary);padding:2px 8px;border-radius:10px;font-weight:600}
+     .pipeline-cards{flex:1;display:flex;flex-direction:column;gap:8px;min-height:60px}
+     .pipeline-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:12px;cursor:grab;transition:all var(--transition);box-shadow:var(--card-shadow);border-left:3px solid var(--accent)}
+     .pipeline-card:active{cursor:grabbing}
+     .pipeline-card.dragging{opacity:0.5;transform:scale(0.95)}
+     .pipeline-card-name{font-weight:600;font-size:0.9rem;margin-bottom:4px}
+     .pipeline-card-budget{font-size:0.8rem;color:var(--text-muted);margin-bottom:6px}
+     .pipeline-card-score{display:inline-flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:600}
+     .score-dot{width:8px;height:8px;border-radius:50%}
+     .score-dot.hot{background:var(--kpi-negative)}
+     .score-dot.warm{background:var(--status-lead)}
+     .score-dot.cold{background:var(--text-muted)}
+   
+     /* AI Assistant */
+     .ai-generator{display:grid;grid-template-columns:350px 1fr;gap:24px}
+     .ai-controls{display:flex;flex-direction:column;gap:16px}
+     .ai-result{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:24px;min-height:300px}
+     .ai-message-card{background:var(--bg-tertiary);border-radius:var(--radius);padding:20px;margin-bottom:12px;position:relative}
+     .ai-message-type{font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+     .ai-message-text{font-size:0.95rem;line-height:1.6;white-space:pre-wrap}
+     .ai-message-actions{display:flex;gap:8px;margin-top:12px}
+     .tone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+     .tone-btn{padding:10px;border:2px solid var(--border-color);border-radius:var(--radius);text-align:center;font-size:0.82rem;font-weight:500;transition:all var(--transition)}
+     .tone-btn:hover{border-color:var(--accent)}
+     .tone-btn.active{border-color:var(--accent);background:var(--sidebar-item-active);color:var(--accent)}
+   
+     /* Calendar */
+     .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+     .calendar-header{text-align:center;font-size:0.75rem;font-weight:600;color:var(--text-muted);padding:8px}
+     .calendar-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:0.85rem;cursor:pointer;transition:all var(--transition);position:relative}
+     .calendar-day:hover{background:var(--bg-tertiary)}
+     .calendar-day.today{background:var(--accent);color:#fff;font-weight:700}
+     .calendar-day.has-event::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+     .calendar-day.today.has-event::after{background:#fff}
+     .calendar-day.other-month{color:var(--text-muted);opacity:0.4}
+   
+     /* Toasts */
+     .toast-container{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:8px}
+     .toast{padding:12px 20px;border-radius:var(--radius);font-size:0.9rem;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,0.15);animation:toastIn 0.3s ease;min-width:280px}
+     .toast.success{background:#10b981;color:#fff}
+     .toast.error{background:#ef4444;color:#fff}
+     .toast.info{background:var(--tooltip-bg);color:#fff}
+     @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+   
+     /* Lead Detail */
+     .detail-grid{display:grid;grid-template-columns:1fr 380px;gap:24px}
+     .detail-section{margin-bottom:24px}
+     .detail-section-title{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px}
+     .comm-timeline{display:flex;flex-direction:column;gap:12px}
+     .comm-item{display:flex;gap:12px;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);border-left:3px solid var(--accent)}
+     .comm-item.inbound{border-left-color:var(--kpi-positive)}
+     .comm-item.ai-generated{border-left-color:var(--pipeline-qualified)}
+     .comm-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+     .comm-content{flex:1}
+     .comm-meta{font-size:0.75rem;color:var(--text-muted);margin-bottom:4px}
+     .comm-text{font-size:0.9rem}
+   
+     /* Search */
+     .search-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+     .search-input{flex:1;min-width:200px}
+   
+     /* Responsive */
+     @media(max-width:1200px){
+       .kpi-grid{grid-template-columns:repeat(2,1fr)}
+       .charts-grid{grid-template-columns:1fr 1fr}
+       .ai-generator{grid-template-columns:1fr}
+       .detail-grid{grid-template-columns:1fr}
+     }
+     @media(max-width:768px){
+       .sidebar{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%)}
+       .sidebar.mobile-open{transform:translateX(0)}
+       .sidebar-overlay{display:none;position:fixed;inset:0;background:var(--backdrop);z-index:99}
+       .sidebar-overlay.show{display:block}
+       .hamburger{display:block}
+       .kpi-grid{grid-template-columns:1fr 1fr}
+       .charts-grid{grid-template-columns:1fr}
+       .screens-container{padding:16px}
+       .topbar{padding:0 16px}
+       .pipeline-container{flex-direction:column}
+       .pipeline-column{max-width:100%}
+       .form-row{grid-template-columns:1fr}
+     }
+   
+     /* Tabs */
+     .tabs{display:flex;gap:0;border-bottom:2px solid var(--border-color);margin-bottom:20px}
+     .tab{padding:10px 20px;font-size:0.9rem;font-weight:500;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all var(--transition)}
+     .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+     .tab:hover{color:var(--text-primary)}
+   
+     /* Empty state */
+     .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+     .empty-state svg{width:64px;height:64px;margin-bottom:16px;opacity:0.4}
+     .empty-state-title{font-size:1.1rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px}
+     .empty-state-desc{font-size:0.9rem;margin-bottom:20px}
+   
+     /* Info grid */
+     .info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+     .info-item{display:flex;flex-direction:column;gap:2px}
+     .info-label{font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;font-weight:600}
+     .info-value{font-size:0.9rem;font-weight:500}
+   
+     /* Page header */
+     .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+     .page-header h2{font-size:1.4rem;font-weight:700}
+     .page-actions{display:flex;gap:8px}
+   
+     /* Marketing copy area */
+     .copy-highlight{background:var(--bg-tertiary);padding:16px;border-radius:var(--radius);border:1px solid var(--border-color);font-size:0.9rem;line-height:1.6;white-space:pre-wrap;margin:12px 0}
+   </style>
+   </head>
+   <body>
+   <div class="app-layout">
+     <!-- SIDEBAR -->
+     <aside class="sidebar" id="sidebar">
+       <div class="sidebar-logo">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+         <span>LeadFlow AI</span>
+       </div>
+       <nav class="sidebar-nav">
+         <div class="sidebar-nav-item active" data-screen="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</div>
+         <div class="sidebar-nav-item" data-screen="leads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Leads <span class="badge" id="leadsCount">0</span></div>
+         <div class="sidebar-nav-item" data-screen="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Pipeline</div>
+         <div class="sidebar-nav-item" data-screen="ai-assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> AI Assistant</div>
+         <div class="sidebar-nav-item" data-screen="appointments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Appointments</div>
+         <div class="sidebar-nav-item" data-screen="campaigns"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg> Campaigns</div>
+         <div class="sidebar-nav-item" data-screen="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Analytics</div>
+         <div class="sidebar-nav-item" data-screen="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</div>
+       </nav>
+       <div class="sidebar-footer">
+         <div style="font-size:0.75rem;color:var(--text-muted);text-align:center">LeadFlow AI v1.0</div>
+       </div>
+     </aside>
+     <div class="sidebar-overlay" id="sidebarOverlay"></div>
+   
+     <!-- MAIN -->
+     <main class="main">
+       <!-- Topbar -->
+       <header class="topbar">
+         <div class="topbar-left">
+           <button class="hamburger" id="hamburgerBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+           <span class="topbar-title" id="topbarTitle">Dashboard</span>
+         </div>
+         <div class="topbar-right">
+           <button class="topbar-btn" id="themeToggle" title="Toggle theme"><span id="themeIcon">🌙</span></button>
+           <div class="user-avatar" id="avatarBtn" onclick="document.getElementById('avatarDropdownTop').classList.toggle('open')">AM<span class="dot"></span>
+             <div class="avatar-dropdown" id="avatarDropdownTop">
+               <div class="avatar-dropdown-item" onclick="navigateTo('settings')">⚙️ Account Settings</div>
+               <div class="avatar-dropdown-item" onclick="authLogout()">🚪 Sign Out</div>
+             </div>
+           </div>
+         </div>
+       </header>
+   
+       <!-- Screens Container -->
+       <div class="screens-container" id="screensContainer">
+   
+         <!-- ===== DASHBOARD SCREEN ===== -->
+         <div class="screen active" id="screen-dashboard">
+           <div class="kpi-grid">
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/></svg></div><span class="kpi-trend up">▲ 12%</span></div><div class="kpi-value" id="kpiNewLeads">0</div><div class="kpi-label">New Leads Today</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="kpi-trend up">▲ 8%</span></div><div class="kpi-value" id="kpiActive">0</div><div class="kpi-label">Active Conversations</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="kpi-trend down">▼ 3%</span></div><div class="kpi-value" id="kpiFollowups">0</div><div class="kpi-label">Upcoming Follow-Ups</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div><span class="kpi-trend up">▲ 5%</span></div><div class="kpi-value" id="kpiAppts">0</div><div class="kpi-label">Appointments Scheduled</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="kpi-trend up">▲ 18%</span></div><div class="kpi-value" id="kpiContract">0</div><div class="kpi-label">Under Contract</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><span class="kpi-trend up">▲ 22%</span></div><div class="kpi-value" id="kpiClosed">0</div><div class="kpi-label">Closed This Month</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="kpi-trend up">▲ 14%</span></div><div class="kpi-value" id="kpiRevenue">$0</div><div class="kpi-label">Monthly Revenue</div></div>
+             <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><span class="kpi-trend up" id="kpiConvTrend">▲ 0%</span></div><div class="kpi-value" id="kpiConvRate">0%</div><div class="kpi-label">Conversion Rate</div></div>
+           </div>
+   
+           <div class="charts-grid">
+             <div class="chart-box"><div class="card-header"><span class="card-title">Performance Trend</span><div class="chart-period"><button class="chart-period-btn active" data-period="30">30d</button><button class="chart-period-btn" data-period="90">90d</button><button class="chart-period-btn" data-period="365">1Y</button></div></div><canvas id="chartMonthlyTrend"></canvas></div>
+             <div class="chart-box"><div class="card-header"><span class="card-title">Pipeline Distribution</span></div><canvas id="chartPipeline"></canvas></div>
+             <div class="chart-box"><div class="card-header"><span class="card-title">Lead Sources</span></div><canvas id="chartLeadSources"></canvas></div>
+           </div>
+   
+           <div class="card">
+             <div class="card-header"><span class="card-title">Recent Leads</span><button class="btn btn-sm btn-secondary" onclick="navigateTo('leads')">View All</button></div>
+             <div class="table-wrapper"><table><thead><tr><th>Lead</th><th>Source</th><th>Status</th><th>Budget</th><th>Score</th><th>Last Contact</th><th></th></tr></thead><tbody id="recentLeadsTable"></tbody></table></div>
+           </div>
+         </div>
+   
+         <!-- ===== LEADS SCREEN ===== -->
+         <div class="screen" id="screen-leads">
+           <div class="page-header"><h2>Lead Management</h2><div class="page-actions"><button class="btn btn-primary" onclick="openLeadModal()">+ Add Lead</button></div></div>
+           <div class="card" style="margin-bottom:20px">
+             <div class="search-bar">
+               <input class="form-input search-input" id="leadSearch" placeholder="Search leads by name, email, or phone..." oninput="loadLeads()">
+               <select class="form-select" id="leadStageFilter" onchange="loadLeads()" style="width:160px">
+                 <option value="">All Stages</option>
+                 <option value="new_lead">New Lead</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option>
+                 <option value="showing_scheduled">Showing Scheduled</option><option value="offer_submitted">Offer Submitted</option>
+                 <option value="under_contract">Under Contract</option><option value="closed">Closed</option><option value="lost">Lost</option>
+               </select>
+               <select class="form-select" id="leadScoreFilter" onchange="loadLeads()" style="width:140px">
+                 <option value="">All Scores</option><option value="hot">🔥 Hot (70+)</option><option value="warm">🟡 Warm (40-69)</option><option value="cold">🔵 Cold (&lt;40)</option>
+               </select>
+             </div>
+           </div>
+           <div class="card"><div class="table-wrapper"><table><thead><tr><th>Lead</th><th>Phone</th><th>Property Interest</th><th>Location</th><th>Stage</th><th>Score</th><th>Last Contacted</th><th></th></tr></thead><tbody id="leadsTableBody"></tbody></table></div></div>
+           <div class="empty-state" id="leadsEmpty" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div class="empty-state-title">No leads found</div><div class="empty-state-desc">Add your first lead to get started</div><button class="btn btn-primary" onclick="openLeadModal()">+ Add Lead</button></div>
+         </div>
+   
+         <!-- ===== LEAD DETAIL SCREEN ===== -->
+         <div class="screen" id="screen-lead-detail">
+           <div class="page-header"><button class="btn btn-secondary" onclick="navigateTo('leads')">← Back to Leads</button><div class="page-actions"><button class="btn btn-primary btn-sm" onclick="reScoreLead()">🔄 Re-score</button><button class="btn btn-secondary btn-sm" onclick="deleteCurrentLead()">🗑 Delete</button></div></div>
+           <div class="detail-grid">
+             <div class="detail-main">
+               <div class="card detail-section">
+                 <div class="detail-section-title">Lead Profile</div>
+                 <div class="info-grid" id="leadDetailInfo"></div>
+               </div>
+               <div class="card detail-section">
+                 <div class="detail-section-title">Communication History</div>
+                 <div class="comm-timeline" id="leadDetailComms"><div style="text-align:center;color:var(--text-muted);padding:20px">No communications yet</div></div>
+                 <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="openAddComm()">+ Log Communication</button>
+               </div>
+             </div>
+             <div class="detail-sidebar">
+               <div class="card detail-section"><div class="detail-section-title">Appointments</div><div id="leadDetailAppts"><div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.9rem">No appointments</div></div></div>
+               <div class="card detail-section"><div class="detail-section-title">AI Actions</div>
+                 <button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:8px" onclick="navigateToAiFromLead()">🤖 Generate Follow-up</button>
+                 <button class="btn btn-secondary btn-sm" style="width:100%" onclick="scheduleFromLead()">📅 Schedule Appointment</button>
+               </div>
+             </div>
+           </div>
+         </div>
+   
+         <!-- ===== PIPELINE SCREEN ===== -->
+         <div class="screen" id="screen-pipeline">
+           <div class="page-header"><h2>Pipeline View</h2></div>
+           <div class="pipeline-container" id="pipelineContainer"></div>
+         </div>
+   
+         <!-- ===== AI ASSISTANT SCREEN ===== -->
+         <div class="screen" id="screen-ai-assistant">
+           <div class="page-header"><h2>AI Follow-Up Assistant</h2></div>
+           <div class="ai-generator">
+             <div class="ai-controls">
+               <div class="card">
+                 <div class="card-title" style="margin-bottom:12px">Lead</div>
+                 <select class="form-select" id="aiLeadSelect"><option value="">Select a lead...</option></select>
+               </div>
+               <div class="card">
+                 <div class="card-title" style="margin-bottom:12px">Message Type</div>
+                 <select class="form-select" id="aiMsgType">
+                   <option value="sms_followup">SMS Follow-up</option><option value="email_followup">Email Follow-up</option>
+                   <option value="call_script">Call Script</option><option value="cold_reengage">Cold Re-engage</option>
+                   <option value="appointment_reminder">Appointment Reminder</option>
+                   <option value="property_update">Property Update</option>
+                 </select>
+               </div>
+               <div class="card">
+                 <div class="card-title" style="margin-bottom:12px">Tone</div>
+                 <div class="tone-grid">
+                   <button class="tone-btn active" data-tone="professional">💼 Professional</button>
+                   <button class="tone-btn" data-tone="friendly">😊 Friendly</button>
+                   <button class="tone-btn" data-tone="urgent">⚡ Urgent</button>
+                   <button class="tone-btn" data-tone="casual">✌️ Casual</button>
+                 </div>
+               </div>
+               <button class="btn btn-primary" onclick="generateAI()" style="width:100%;justify-content:center;padding:14px">✨ Generate Message</button>
+             </div>
+             <div class="ai-result" id="aiResult"><div style="text-align:center;color:var(--text-muted);padding:40px;font-size:1.1rem">Select a lead and generate an AI-powered message</div></div>
+           </div>
+         </div>
+   
+         <!-- ===== APPOINTMENTS SCREEN ===== -->
+         <div class="screen" id="screen-appointments">
+           <div class="page-header"><h2>Appointments</h2><button class="btn btn-primary" onclick="openApptModal()">+ Schedule</button></div>
+           <div style="display:grid;grid-template-columns:320px 1fr;gap:24px">
+             <div class="card"><div class="card-title" style="margin-bottom:12px">Calendar</div><div id="calendarWidget"></div></div>
+             <div class="card"><div class="card-title" style="margin-bottom:12px">Upcoming Appointments</div><div id="appointmentsList"><div style="text-align:center;color:var(--text-muted);padding:20px">Loading...</div></div></div>
+           </div>
+         </div>
+   
+         <!-- ===== CAMPAIGNS SCREEN ===== -->
+         <div class="screen" id="screen-campaigns">
+           <div class="page-header"><h2>Campaigns</h2><button class="btn btn-primary" onclick="openCampaignModal()">+ New Campaign</button></div>
+           <div class="table-wrapper card"><table><thead><tr><th>Campaign</th><th>Type</th><th>Status</th><th>Sent</th><th>Opened</th><th>Clicked</th><th>Created</th><th></th></tr></thead><tbody id="campaignsTable"></tbody></table></div>
+         </div>
+   
+         <!-- ===== ANALYTICS SCREEN ===== -->
+         <div class="screen" id="screen-analytics">
+           <div class="page-header"><h2>Analytics & Reports</h2></div>
+           <div class="kpi-grid" style="margin-bottom:24px">
+             <div class="kpi-card"><div class="kpi-value" id="anaTotalLeads">0</div><div class="kpi-label">Total Leads</div></div>
+             <div class="kpi-card"><div class="kpi-value" id="anaAvgScore">0</div><div class="kpi-label">Avg AI Score</div></div>
+             <div class="kpi-card"><div class="kpi-value" id="anaResponseRate">0%</div><div class="kpi-label">Response Rate</div></div>
+             <div class="kpi-card"><div class="kpi-value" id="anaRevenue">$0</div><div class="kpi-label">Total Revenue</div></div>
+           </div>
+           <div class="charts-grid">
+             <div class="chart-box"><div class="card-title" style="margin-bottom:12px">Conversion Funnel</div><canvas id="chartFunnel"></canvas></div>
+             <div class="chart-box"><div class="card-title" style="margin-bottom:12px">Lead Source ROI</div><canvas id="chartSourceROI"></canvas></div>
+           </div>
+           <div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:12px">Lead Source Breakdown</div><div class="table-wrapper"><table id="sourceTable"></table></div></div>
+         </div>
+   
+         <!-- ===== SETTINGS SCREEN ===== -->
+         <div class="screen" id="screen-settings">
+           <div class="page-header"><h2>Settings</h2></div>
+           <div class="tabs">
+             <button class="tab active" onclick="settingsTab('profile',this)">Profile</button>
+             <button class="tab" onclick="settingsTab('subscription',this)">Subscription</button>
+             <button class="tab" onclick="settingsTab('integrations',this)">Integrations</button>
+           </div>
+           <div id="settingsProfile"><div class="card" style="max-width:600px">
+             <div class="card-title" style="margin-bottom:20px">Account Profile</div>
+             <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="setName" value="Alex Morgan"></div>
+             <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="setEmail" value="demo@leadflow.ai"></div>
+             <div class="form-group"><label class="form-label">Role</label><input class="form-input" id="setRole" disabled></div>
+             <div class="form-group"><label class="form-label">Current Plan</label><input class="form-input" id="setPlan" disabled></div>
+             <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+           </div></div>
+           <div id="settingsSubscription" style="display:none"><div class="card" style="max-width:600px">
+             <div class="card-title" style="margin-bottom:20px">Subscription Management</div>
+             <p style="color:var(--text-secondary);margin-bottom:16px">Manage your LeadFlow AI subscription and billing.</p>
+             <div class="info-grid" id="subInfo"></div>
+             <a href="/pricing.html" target="_blank" class="btn btn-primary" style="margin-top:16px">Upgrade Plan</a>
+           </div></div>
+           <div id="settingsIntegrations" style="display:none"><div class="card" style="max-width:600px">
+             <div class="card-title" style="margin-bottom:20px">Integrations</div>
+             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+               <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">📅 Google Calendar</div><span class="status-badge active">Connected</span></div>
+               <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">📧 Outlook Calendar</div><span class="status-badge new">Not Connected</span></div>
+               <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">💬 SMS (Twilio)</div><span class="status-badge active">Connected</span></div>
+               <div class="card" style="padding:16px;text-align:center"><div style="font-weight:600;margin-bottom:4px">💳 Stripe</div><span class="status-badge active">Connected</span></div>
+             </div>
+           </div></div>
+         </div>
+       </div>
+     </main>
+   </div>
+   
+   <!-- MODALS -->
+   <div class="modal-overlay" id="leadModal">
+     <div class="modal"><div class="modal-header"><span class="modal-title" id="leadModalTitle">Add Lead</span><button class="modal-close" onclick="closeModal('leadModal')">✕</button></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="leadFormName"></div><div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="leadFormPhone"></div></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="leadFormEmail"></div><div class="form-group"><label class="form-label">Lead Source</label><select class="form-select" id="leadFormSource"><option>Website</option><option>Referral</option><option>Zillow</option><option>Open House</option><option>Social Media</option><option>Cold Call</option><option>Other</option></select></div></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Property Interest</label><input class="form-input" id="leadFormProperty"></div><div class="form-group"><label class="form-label">Preferred Location</label><input class="form-input" id="leadFormLocation"></div></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Budget Min ($)</label><input class="form-input" id="leadFormBudgetMin" type="number"></div><div class="form-group"><label class="form-label">Budget Max ($)</label><input class="form-input" id="leadFormBudgetMax" type="number"></div></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Timeline</label><select class="form-select" id="leadFormTimeline"><option>Immediate</option><option>1-3 Months</option><option>3-6 Months</option><option>6-12 Months</option><option>Just Researching</option></select></div><div class="form-group"><label class="form-label">Stage</label><select class="form-select" id="leadFormStage"><option value="new_lead">New Lead</option><option value="contacted">Contacted</option><option value="qualified">Qualified</option><option value="showing_scheduled">Showing Scheduled</option></select></div></div>
+       <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="leadFormNotes"></textarea></div>
+       <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('leadModal')">Cancel</button><button class="btn btn-primary" onclick="saveLead()">Save Lead</button></div>
+     </div>
+   </div>
+   
+   <div class="modal-overlay" id="commModal">
+     <div class="modal"><div class="modal-header"><span class="modal-title">Log Communication</span><button class="modal-close" onclick="closeModal('commModal')">✕</button></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Channel</label><select class="form-select" id="commChannel"><option>SMS</option><option>Email</option><option>Call</option><option>Note</option></select></div><div class="form-group"><label class="form-label">Direction</label><select class="form-select" id="commDirection"><option value="outbound">Outbound</option><option value="inbound">Inbound</option></select></div></div>
+       <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="commContent"></textarea></div>
+       <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('commModal')">Cancel</button><button class="btn btn-primary" onclick="saveComm()">Save</button></div>
+     </div>
+   </div>
+   
+   <div class="modal-overlay" id="apptModal">
+     <div class="modal"><div class="modal-header"><span class="modal-title">Schedule Appointment</span><button class="modal-close" onclick="closeModal('apptModal')">✕</button></div>
+       <div class="form-group"><label class="form-label">Lead</label><select class="form-select" id="apptLeadSelect"></select></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="apptType"><option>Showing</option><option>Consultation</option><option>Open House</option><option>Callback</option></select></div><div class="form-group"><label class="form-label">Title</label><input class="form-input" id="apptTitle" value="Property Showing"></div></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Date & Time</label><input class="form-input" id="apptStart" type="datetime-local"></div><div class="form-group"><label class="form-label">End Time</label><input class="form-input" id="apptEnd" type="datetime-local"></div></div>
+       <div class="form-group"><label class="form-label">Location / Notes</label><textarea class="form-textarea" id="apptNotes"></textarea></div>
+       <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('apptModal')">Cancel</button><button class="btn btn-primary" onclick="saveAppointment()">Schedule</button></div>
+     </div>
+   </div>
+   
+   <div class="modal-overlay" id="campaignModal">
+     <div class="modal"><div class="modal-header"><span class="modal-title">Create Campaign</span><button class="modal-close" onclick="closeModal('campaignModal')">✕</button></div>
+       <div class="form-row"><div class="form-group"><label class="form-label">Campaign Name</label><input class="form-input" id="campName"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" id="campType"><option value="email">Email</option><option value="sms">SMS</option><option value="social">Social Media</option></select></div></div>
+       <div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="campSubject"></div>
+       <div class="form-group"><label class="form-label">Content</label><textarea class="form-textarea" id="campContent" style="min-height:150px"></textarea></div>
+       <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('campaignModal')">Cancel</button><button class="btn btn-primary" onclick="saveCampaign()">Create</button></div>
+     </div>
+   </div>
+   
+   <div class="toast-container" id="toastContainer"></div>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+   
+   <script>
+   /* ================================================================
+      LEADFLOW AI — Complete Frontend Logic
+      ================================================================ */
+   const API = '/api';
+   let currentScreen = 'dashboard';
+   let currentLeadId = null;
+   let allLeads = [];
+   let currentUser = null;
+   let chartInstances = {};
+   let calYear, calMonth;
+   
+   const STAGE_LABELS = {new_lead:'New Lead',contacted:'Contacted',qualified:'Qualified',showing_scheduled:'Showing Scheduled',offer_submitted:'Offer Submitted',under_contract:'Under Contract',closed:'Closed',lost:'Lost'};
+   const SCREEN_TITLES = {dashboard:'Dashboard',leads:'Leads',pipeline:'Pipeline','ai-assistant':'AI Assistant',appointments:'Appointments',campaigns:'Campaigns',analytics:'Analytics',settings:'Settings','lead-detail':'Lead Detail'};
+   
+   // XSS Protection: escape HTML entities
+   function esc(s) { if (!s && s !== 0) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+   
+   // === Auth ===
+   function getHeaders(){const t=localStorage.getItem('leadflow_token');const h={'Content-Type':'application/json'};if(t)h['Authorization']='Bearer '+t;return h}
+   async function apiFetch(path,opt={}){const r=await fetch(API+path,{...opt,headers:{...getHeaders(),...(opt.headers||{})}});if(r.status===401){localStorage.removeItem('leadflow_token');showToast('Session expired','error')}return r}
+   
 function authLogin(){const token=localStorage.getItem('leadflow_token');if(token&&token.length>10){apiFetch('/auth/me').then(r=>r.json()).then(u=>{if(u.user||u.id){currentUser=u.user||u;updateUserUI();loadDashboard();loadLeads();loadAppointments();loadCampaigns();populateLeadSelects();renderCalendar();renderPipeline()}else{authDemo()}}).catch(()=>authDemo())}else{authDemo()}}
 async function authDemo(){try{const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'demo@leadflow.ai',password:'demo123'})});const d=await r.json();if(d.token){localStorage.setItem('leadflow_token',d.token);currentUser=d.user||{id:1,full_name:'Alex Morgan',email:'demo@leadflow.ai',role:'agent',plan:'professional'}}else{currentUser={id:1,full_name:'Alex Morgan',email:'demo@leadflow.ai',role:'agent',plan:'professional',subscription:{plan:'professional',status:'active'}};localStorage.setItem('leadflow_token','1')}}catch(e){currentUser={id:1,full_name:'Alex Morgan',email:'demo@leadflow.ai',role:'agent',plan:'professional',subscription:{plan:'professional',status:'active'}};localStorage.setItem('leadflow_token','1')}updateUserUI();loadDashboard();loadLeads();loadAppointments();loadCampaigns();populateLeadSelects();renderCalendar();renderPipeline()}
-   587|function authLogout(){localStorage.removeItem('leadflow_token');location.reload()}
-   588|function updateUserUI(){if(!currentUser)return;document.getElementById('setName').value=currentUser.full_name||'';document.getElementById('setEmail').value=currentUser.email||'';document.getElementById('setRole').value=currentUser.role||'';document.getElementById('setPlan').value=(currentUser.subscription||currentUser).plan||'starter';
-   589|  const av=document.getElementById('avatarBtn');av.childNodes[0].textContent=(currentUser.full_name||'AM').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-   590|  const si=document.getElementById('subInfo');if(si)si.innerHTML=`<div class="info-item"><span class="info-label">Plan</span><span class="info-value" style="text-transform:capitalize">${(currentUser.subscription||currentUser).plan||'starter'}</span></div><div class="info-item"><span class="info-label">Status</span><span class="info-value">${(currentUser.subscription||currentUser).status||'active'}</span></div>`;
-   591|}
-   592|
-   593|// === Theme ===
-   594|function initTheme(){const s=localStorage.getItem('leadflow_theme');if(s==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.getElementById('themeIcon').textContent='🌙'}}
-   595|function toggleTheme(){const d=document.documentElement.classList.toggle('dark');localStorage.setItem('leadflow_theme',d?'dark':'light');document.getElementById('themeIcon').textContent=d?'☀️':'🌙';updateChartColors()}
-   596|document.getElementById('themeToggle').addEventListener('click',toggleTheme);
-   597|
-   598|// === Navigation ===
-   599|function navigateTo(screenId){if(currentScreen===screenId)return;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sidebar-nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('screen-'+screenId);if(el)el.classList.add('active');const nav=document.querySelector(`.sidebar-nav-item[data-screen="${screenId}"]`);if(nav)nav.classList.add('active');document.getElementById('topbarTitle').textContent=SCREEN_TITLES[screenId]||screenId;currentScreen=screenId;closeMobileSidebar();if(screenId==='dashboard'){setTimeout(renderCharts,100);loadDashboard()}if(screenId==='pipeline')renderPipeline();if(screenId==='analytics')loadAnalytics();if(screenId==='appointments'){renderCalendar();loadAppointments()}}
-   600|document.querySelectorAll('.sidebar-nav-item[data-screen]').forEach(i=>i.addEventListener('click',e=>{e.preventDefault();navigateTo(i.dataset.screen)}));
-   601|function openMobileSidebar(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('sidebarOverlay').classList.add('show')}
-   602|function closeMobileSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('sidebarOverlay').classList.remove('show')}
-   603|document.getElementById('hamburgerBtn').addEventListener('click',openMobileSidebar);
-   604|document.getElementById('sidebarOverlay').addEventListener('click',closeMobileSidebar);
-   605|
-   606|// === Modals ===
-   607|function openModal(id){document.getElementById(id).classList.add('open')}
-   608|function closeModal(id){document.getElementById(id).classList.remove('open')}
-   609|
-   610|// === Toasts ===
-   611|function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300)},3500)}
-   612|
-   613|// === Dashboard ===
-   614|async function loadDashboard(){
-   615|  try{const r=await apiFetch('/analytics/dashboard');const d=await r.json();
-   616|    document.getElementById('kpiNewLeads').textContent=d.new_leads_today||0;
-   617|    document.getElementById('kpiActive').textContent=d.active_conversations||0;
-   618|    document.getElementById('kpiFollowups').textContent=d.upcoming_followups||0;
-   619|    document.getElementById('kpiAppts').textContent=d.appointments_scheduled||0;
-   620|    document.getElementById('kpiContract').textContent=d.listings_under_contract||0;
-   621|    document.getElementById('kpiClosed').textContent=d.closed_transactions||0;
-   622|    document.getElementById('kpiRevenue').textContent='$'+((d.monthly_revenue||0)/1000).toFixed(0)+'K';
-   623|    document.getElementById('kpiConvRate').textContent=(d.conversion_rate||0)+'%';
-   624|    // Recent leads
-   625|    loadRecentLeads();
-   626|  }catch(e){console.error(e)}
-   627|}
-   628|async function loadRecentLeads(){try{const r=await apiFetch('/leads?limit=5');const leads=await r.json();const t=document.getElementById('recentLeadsTable');t.innerHTML=leads.slice(0,5).map(l=>`<tr><td><div class="lead-name-cell"><div class="lead-avatar">${(l.name||'??').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div><div><div class="lead-name">${esc(l.name)}</div><div class="lead-company">${esc(l.email||'')}</div></div></div></td><td>${esc(l.lead_source||'-')}</td><td><span class="status-badge ${l.stage==='closed'?'active':l.stage==='new_lead'?'new':'followup'}">${STAGE_LABELS[l.stage]||l.stage}</span></td><td class="table-value">${l.budget_max?'$'+(l.budget_max/1000).toFixed(0)+'K':'-'}</td><td><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></td><td class="table-date">${esc(l.last_contacted||'Never')}</td><td><div class="table-actions"><button class="table-action-btn" onclick="viewLead(${l.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('')}catch(e){}
-   629|}
-   630|
-   631|// === Charts ===
-   632|function getChartColors(){const d=document.documentElement.classList.contains('dark');return{accent:'#0ea5e9',accentLight:'#38bdf8',teal:'#06b6d4',grid:d?'#334155':'#e2e8f0',text:d?'#94a3b8':'#64748b',purple:'#8b5cf6',emerald:'#10b981',amber:'#f59e0b',rose:'#f43f5e',slate:'#64748b'}}
-   633|function renderCharts(){const c=getChartColors();Object.values(chartInstances).forEach(ch=>ch.destroy());chartInstances={};
-   634|  const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-   635|  const ctx1=document.getElementById('chartMonthlyTrend');if(ctx1)chartInstances.trend=new Chart(ctx1,{type:'line',data:{labels:m,datasets:[{label:'New Leads',data:[120,145,160,155,190,210,195,225,240,230,260,248],borderColor:c.accent,borderWidth:2.5,tension:0.4,fill:true,backgroundColor:'rgba(14,165,233,0.08)',pointRadius:3},{label:'Closed',data:[80,95,105,100,120,135,125,145,155,148,170,162],borderColor:c.teal,borderWidth:2.5,tension:0.4,fill:false,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,color:c.text}}},scales:{y:{grid:{color:c.grid},ticks:{color:c.text}},x:{grid:{color:c.grid},ticks:{color:c.text}}}}});
-   636|  const ctx2=document.getElementById('chartPipeline');if(ctx2)chartInstances.pipeline=new Chart(ctx2,{type:'doughnut',data:{labels:Object.values(STAGE_LABELS).slice(0,6),datasets:[{data:[48,35,28,18,12,8],backgroundColor:[c.purple,'#7c3aed',c.accent,c.teal,c.amber,c.emerald],borderColor:'transparent'}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,color:c.text,padding:10,font:{size:10}}}}}});
-   637|  const ctx3=document.getElementById('chartLeadSources');if(ctx3)chartInstances.sources=new Chart(ctx3,{type:'bar',data:{labels:['Website','Referral','Zillow','Open House','Social','Other'],datasets:[{data:[62,48,40,35,28,22],backgroundColor:[c.accent,c.teal,c.purple,c.amber,c.emerald,c.slate],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:c.grid},ticks:{color:c.text}},y:{grid:{display:false},ticks:{color:c.text}}}}});
-   638|}
-   639|function updateChartColors(){renderCharts()}
-   640|document.querySelectorAll('.chart-period-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.chart-period-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
-   641|
-   642|// === Leads CRUD ===
-   643|async function loadLeads(){try{const s=document.getElementById('leadSearch').value;const stage=document.getElementById('leadStageFilter').value;const scoreF=document.getElementById('leadScoreFilter').value;let url='/leads?';if(s)url+='search='+encodeURIComponent(s)+'&';if(stage)url+='stage='+stage+'&';const r=await apiFetch(url);let leads=await r.json();if(scoreF==='hot')leads=leads.filter(l=>l.ai_score>=70);else if(scoreF==='warm')leads=leads.filter(l=>l.ai_score>=40&&l.ai_score<70);else if(scoreF==='cold')leads=leads.filter(l=>l.ai_score<40);allLeads=leads;document.getElementById('leadsCount').textContent=leads.length;const t=document.getElementById('leadsTableBody');const e=document.getElementById('leadsEmpty');if(leads.length===0){t.innerHTML='';e.style.display='block'}else{e.style.display='none';t.innerHTML=leads.map(l=>`<tr><td><div class="lead-name-cell"><div class="lead-avatar" style="cursor:pointer" onclick="viewLead(${l.id})">${(l.name||'??').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div><div><div class="lead-name" style="cursor:pointer" onclick="viewLead(${l.id})">${esc(l.name)}</div><div class="lead-company">${esc(l.email||'')}</div></div></div></td><td>${esc(l.phone||'-')}</td><td>${esc(l.property_interest||'-')}</td><td>${esc(l.preferred_location||'-')}</td><td><span class="status-badge ${l.stage==='closed'?'active':l.stage==='new_lead'?'new':'followup'}">${STAGE_LABELS[l.stage]||l.stage}</span></td><td><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></td><td class="table-date">${esc(l.last_contacted||'Never')}</td><td><div class="table-actions"><button class="table-action-btn" onclick="viewLead(${l.id})" title="View">👁</button><button class="table-action-btn" onclick="editLead(${l.id})" title="Edit">✏️</button><button class="table-action-btn" onclick="deleteLead(${l.id})" title="Delete">🗑</button></div></td></tr>`).join('')}}catch(e){showToast('Error loading leads','error')}}
-   644|async function deleteLead(id){if(!confirm('Delete this lead?'))return;await apiFetch('/leads/'+id,{method:'DELETE'});showToast('Lead deleted','success');loadLeads();if(currentScreen==='lead-detail')navigateTo('leads')}
-   645|async function viewLead(id){currentLeadId=id;navigateTo('lead-detail');const r=await apiFetch('/leads/'+id);const l=await r.json();document.getElementById('leadDetailInfo').innerHTML=`<div class="info-item"><span class="info-label">Name</span><span class="info-value">${esc(l.name)}</span></div><div class="info-item"><span class="info-label">Phone</span><span class="info-value">${esc(l.phone||'-')}</span></div><div class="info-item"><span class="info-label">Email</span><span class="info-value">${esc(l.email||'-')}</span></div><div class="info-item"><span class="info-label">Property Interest</span><span class="info-value">${esc(l.property_interest||'-')}</span></div><div class="info-item"><span class="info-label">Budget</span><span class="info-value">${l.budget_min?'$'+l.budget_min.toLocaleString():''}${l.budget_max?' - $'+l.budget_max.toLocaleString():''}</span></div><div class="info-item"><span class="info-label">Location</span><span class="info-value">${esc(l.preferred_location||'-')}</span></div><div class="info-item"><span class="info-label">Source</span><span class="info-value">${esc(l.lead_source||'-')}</span></div><div class="info-item"><span class="info-label">Timeline</span><span class="info-value">${l.timeline||'-'}</span></div><div class="info-item"><span class="info-label">Stage</span><span class="info-value">${STAGE_LABELS[l.stage]||l.stage}</span></div><div class="info-item"><span class="info-label">AI Score</span><span class="info-value"><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></span></div><div class="info-item"><span class="info-label">Notes</span><span class="info-value">${esc(l.notes||'None')}</span></div>`;
-   646|  const comms=l.communications||[];const cc=document.getElementById('leadDetailComms');cc.innerHTML=comms.length?comms.map(c=>`<div class="comm-item ${c.direction}${c.ai_generated?' ai-generated':''}"><div class="comm-icon" style="background:${c.channel==='SMS'?'#8b5cf6':c.channel==='Email'?'#0ea5e9':c.channel==='Call'?'#10b981':'#64748b'}20;color:${c.channel==='SMS'?'#8b5cf6':c.channel==='Email'?'#0ea5e9':c.channel==='Call'?'#10b981':'#64748b'}">${c.channel==='SMS'?'💬':c.channel==='Email'?'📧':c.channel==='Call'?'📞':'📝'}</div><div class="comm-content"><div class="comm-meta">${c.channel} • ${c.direction} • ${new Date(c.created_at).toLocaleString()}${c.ai_generated?' • <span style="color:var(--accent)">🤖 AI Generated</span>':''}</div><div class="comm-text">${c.content}</div></div></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px">No communications yet</div>';
-   647|  const apps=l.appointments||[];document.getElementById('leadDetailAppts').innerHTML=apps.length?apps.map(a=>`<div style="padding:8px;margin-bottom:6px;background:var(--bg-tertiary);border-radius:var(--radius-sm);font-size:0.85rem"><div style="font-weight:600">${a.title}</div><div style="color:var(--text-muted)">${new Date(a.start_time).toLocaleString()} - ${a.appt_type}</div><span class="status-badge ${a.status==='confirmed'?'active':a.status==='cancelled'?'hot':'new'}">${a.status}</span></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.9rem">No appointments</div>';
-   648|}
-   649|function editLead(id){const l=allLeads.find(ll=>ll.id===id);if(!l)return;document.getElementById('leadModalTitle').textContent='Edit Lead';document.getElementById('leadFormName').value=l.name||'';document.getElementById('leadFormPhone').value=l.phone||'';document.getElementById('leadFormEmail').value=l.email||'';document.getElementById('leadFormSource').value=l.lead_source||'Website';document.getElementById('leadFormProperty').value=l.property_interest||'';document.getElementById('leadFormLocation').value=l.preferred_location||'';document.getElementById('leadFormBudgetMin').value=l.budget_min||'';document.getElementById('leadFormBudgetMax').value=l.budget_max||'';document.getElementById('leadFormTimeline').value=l.timeline||'1-3 Months';document.getElementById('leadFormStage').value=l.stage||'new_lead';document.getElementById('leadFormNotes').value=l.notes||'';currentLeadId=id;openModal('leadModal')}
-   650|function openLeadModal(){currentLeadId=null;document.getElementById('leadModalTitle').textContent='Add Lead';['leadFormName','leadFormPhone','leadFormEmail','leadFormProperty','leadFormLocation','leadFormBudgetMin','leadFormBudgetMax','leadFormNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('leadFormSource').value='Website';document.getElementById('leadFormTimeline').value='1-3 Months';document.getElementById('leadFormStage').value='new_lead';openModal('leadModal')}
-   651|async function saveLead(){const data={name:document.getElementById('leadFormName').value,phone:document.getElementById('leadFormPhone').value,email:document.getElementById('leadFormEmail').value,lead_source:document.getElementById('leadFormSource').value,property_interest:document.getElementById('leadFormProperty').value,preferred_location:document.getElementById('leadFormLocation').value,budget_min:parseFloat(document.getElementById('leadFormBudgetMin').value)||null,budget_max:parseFloat(document.getElementById('leadFormBudgetMax').value)||null,timeline:document.getElementById('leadFormTimeline').value,stage:document.getElementById('leadFormStage').value,notes:document.getElementById('leadFormNotes').value};
-   652|  if(!data.name){showToast('Name is required','error');return}
-   653|  try{const method=currentLeadId?'PUT':'POST';const url=currentLeadId?'/leads/'+currentLeadId:'/leads';const r=await apiFetch(url,{method,body:JSON.stringify(data)});if(r.ok){showToast(currentLeadId?'Lead updated':'Lead created','success');closeModal('leadModal');loadLeads();if(currentLeadId&&currentScreen==='lead-detail')viewLead(currentLeadId)}else{const e=await r.json();showToast(e.error||'Error','error')}}catch(e){showToast('Error saving lead','error')}}
-   654|async function reScoreLead(){if(!currentLeadId)return;await apiFetch('/leads/'+currentLeadId+'/score',{method:'POST'});showToast('Lead re-scored','success');viewLead(currentLeadId)}
-   655|async function deleteCurrentLead(){if(!currentLeadId)return;await deleteLead(currentLeadId)}
-   656|
-   657|// === Communications ===
-   658|async function openAddComm(){if(!currentLeadId){showToast('No lead selected','error');return}openModal('commModal')}
-   659|async function saveComm(){const data={channel:document.getElementById('commChannel').value,direction:document.getElementById('commDirection').value,content:document.getElementById('commContent').value,ai_generated:0};
-   660|  if(!data.content){showToast('Message is required','error');return}
-   661|  const r=await apiFetch('/leads/'+currentLeadId+'/communications',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Communication logged','success');closeModal('commModal');viewLead(currentLeadId);document.getElementById('commContent').value=''}}
-   662|
-   663|// === Pipeline ===
-   664|function renderPipeline(){const stages=['new_lead','contacted','qualified','showing_scheduled','offer_submitted','under_contract','closed','lost'];const colors=['#6366f1','#8b5cf6','#0ea5e9','#06b6d4','#f59e0b','#10b981','#6b7280','#ef4444'];const c=document.getElementById('pipelineContainer');c.innerHTML=stages.map((s,i)=>`<div class="pipeline-column" data-stage="${s}" ondragover="event.preventDefault()" ondrop="dropLead(event,'${s}')"><div class="pipeline-col-header"><span class="pipeline-col-title" style="color:${colors[i]}">${STAGE_LABELS[s]}</span><span class="pipeline-col-count" id="pipeCount-${s}">0</span></div><div class="pipeline-cards" id="pipeCol-${s}"></div></div>`).join('');loadPipelineLeads()}
-   665|async function loadPipelineLeads(){const r=await apiFetch('/leads');const leads=await r.json();allLeads=leads;const stages=['new_lead','contacted','qualified','showing_scheduled','offer_submitted','under_contract','closed','lost'];stages.forEach(s=>{const col=document.getElementById('pipeCol-'+s);const cnt=document.getElementById('pipeCount-'+s);const cards=leads.filter(l=>l.stage===s);if(cnt)cnt.textContent=cards.length;if(col)col.innerHTML=cards.map(l=>`<div class="pipeline-card" draggable="true" ondragstart="dragLead(event,${l.id})" ondragend="event.target.classList.remove('dragging')" style="border-left-color:${getStageColor(l.stage)};cursor:pointer" onclick="viewLead(${l.id})"><div class="pipeline-card-name">${esc(l.name)}</div><div class="pipeline-card-budget">${l.budget_max?'$'+(l.budget_max/1000).toFixed(0)+'K':''} • ${esc(l.preferred_location||'N/A')}</div><div class="pipeline-card-score"><span class="score-dot ${l.ai_score>=70?'hot':l.ai_score>=40?'warm':'cold'}"></span>Score: ${l.ai_score||50}</div></div>`).join('')})}
-   666|function getStageColor(stage){const m={new_lead:'#6366f1',contacted:'#8b5cf6',qualified:'#0ea5e9',showing_scheduled:'#06b6d4',offer_submitted:'#f59e0b',under_contract:'#10b981',closed:'#6b7280',lost:'#ef4444'};return m[stage]||'#0ea5e9'}
-   667|let dragLeadId=null;
-   668|function dragLead(e,id){dragLeadId=id;e.target.classList.add('dragging');e.dataTransfer.setData('text/plain',id)}
-   669|async function dropLead(e,stage){e.preventDefault();if(!dragLeadId)return;await apiFetch('/leads/'+dragLeadId+'/stage',{method:'PUT',body:JSON.stringify({stage})});showToast('Lead moved to '+STAGE_LABELS[stage],'success');loadPipelineLeads();loadLeads()}
-   670|
-   671|// === AI Assistant ===
-   672|async function populateLeadSelects(){try{const r=await apiFetch('/leads');const leads=await r.json();const sel=document.getElementById('aiLeadSelect');sel.innerHTML='<option value="">Select a lead...</option>'+leads.map(l=>`<option value="${l.id}">${esc(l.name)} - ${STAGE_LABELS[l.stage]||l.stage}</option>`).join('');document.getElementById('apptLeadSelect').innerHTML='<option value="">Select a lead...</option>'+leads.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('')}catch(e){}}
-   673|async function generateAI(){const leadId=document.getElementById('aiLeadSelect').value;if(!leadId){showToast('Select a lead first','error');return}
-   674|  const type=document.getElementById('aiMsgType').value;const tone=document.querySelector('.tone-btn.active')?.dataset.tone||'professional';const r=await apiFetch('/leads/'+leadId);const lead=await r.json();const genR=await apiFetch('/ai/generate',{method:'POST',body:JSON.stringify({type,tone,lead_context:lead})});const gen=await genR.json();
-   675|  document.getElementById('aiResult').innerHTML=`<div class="ai-message-card"><div class="ai-message-type">${type.replace(/_/g,' ').toUpperCase()} • ${tone} tone ${gen.ai_generated?'• 🤖 AI Generated':''}</div><div class="ai-message-text">${gen.content||'Unable to generate message'}</div><div class="ai-message-actions"><button class="btn btn-sm btn-primary" onclick="copyAI('${(gen.content||'').replace(/'/g,"\\'").replace(/\n/g,'\\n')}')">📋 Copy</button><button class="btn btn-sm btn-secondary" onclick="sendAIToLead(${leadId},'${type}')">📤 Send to Lead</button></div></div>`}
-   676|function copyAI(text){navigator.clipboard.writeText(text).then(()=>showToast('Copied!','success'))}
-   677|async function sendAIToLead(leadId,type){const channel=type.includes('email')?'Email':'SMS';const content=document.querySelector('.ai-message-text')?.textContent||'';await apiFetch('/leads/'+leadId+'/communications',{method:'POST',body:JSON.stringify({channel,direction:'outbound',content,ai_generated:1})});showToast('Message sent!','success')}
-   678|document.querySelectorAll('.tone-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.tone-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
-   679|function navigateToAiFromLead(){if(currentLeadId){document.getElementById('aiLeadSelect').value=currentLeadId;navigateTo('ai-assistant')}}
-   680|
-   681|// === Appointments ===
-   682|function renderCalendar(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();drawCalendar()}
-   683|function drawCalendar(){const today=new Date();const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const prevDays=new Date(calYear,calMonth,0).getDate();const w=document.getElementById('calendarWidget');let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><button class="btn btn-sm btn-secondary" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--}drawCalendar()">←</button><span style="font-weight:600">${new Date(calYear,calMonth).toLocaleString('default',{month:'long',year:'numeric'})}</span><button class="btn btn-sm btn-secondary" onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++}drawCalendar()">→</button></div><div class="calendar">`;
-   684|  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>html+=`<div class="calendar-header">${d}</div>`);
-   685|  for(let i=firstDay-1;i>=0;i--){html+=`<div class="calendar-day other-month">${prevDays-i}</div>`}
-   686|  for(let d=1;d<=daysInMonth;d++){const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();html+=`<div class="calendar-day${isToday?' today':''}">${d}</div>`}
-   687|  const total=firstDay+daysInMonth;const remaining=total>35?42-total:35-total;for(let d=1;d<=remaining;d++)html+=`<div class="calendar-day other-month">${d}</div>`;html+='</div>';w.innerHTML=html}
-   688|async function loadAppointments(){try{const r=await apiFetch('/appointments');const apps=await r.json();document.getElementById('appointmentsList').innerHTML=apps.length?apps.map(a=>`<div style="padding:12px;margin-bottom:8px;background:var(--bg-tertiary);border-radius:var(--radius);border-left:3px solid var(--accent)"><div style="font-weight:600;display:flex;justify-content:space-between"><span>${a.title}</span><span class="status-badge ${a.status==='confirmed'?'active':a.status==='cancelled'?'hot':'new'}">${a.status}</span></div><div style="font-size:0.85rem;color:var(--text-secondary)">${a.lead_name||''} • ${a.appt_type}</div><div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px">${new Date(a.start_time).toLocaleString()} - ${new Date(a.end_time).toLocaleTimeString()}</div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn btn-sm btn-secondary" onclick="cancelAppt(${a.id})">✕ Cancel</button></div></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px">No appointments scheduled</div>'}catch(e){}}
-   689|function openApptModal(){document.getElementById('apptStart').value='';document.getElementById('apptEnd').value='';document.getElementById('apptNotes').value='';openModal('apptModal')}
-   690|async function saveAppointment(){const data={lead_id:document.getElementById('apptLeadSelect').value,title:document.getElementById('apptTitle').value,appt_type:document.getElementById('apptType').value,start_time:document.getElementById('apptStart').value,end_time:document.getElementById('apptEnd').value,notes:document.getElementById('apptNotes').value};
-   691|  if(!data.lead_id||!data.start_time){showToast('Lead and date required','error');return}
-   692|  const r=await apiFetch('/appointments',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Appointment scheduled','success');closeModal('apptModal');loadAppointments()}}
-   693|async function confirmAppt(id){await apiFetch('/appointments/'+id,{method:'PUT',body:JSON.stringify({status:'confirmed'})});loadAppointments();showToast('Confirmed','success')}
-   694|async function cancelAppt(id){await apiFetch('/appointments/'+id,{method:'PUT',body:JSON.stringify({status:'cancelled'})});loadAppointments();showToast('Cancelled','info')}
-   695|function scheduleFromLead(){if(currentLeadId){document.getElementById('apptLeadSelect').value=currentLeadId;openApptModal();navigateTo('appointments')}}
-   696|
-   697|// === Campaigns ===
-   698|async function loadCampaigns(){try{const r=await apiFetch('/campaigns');const camps=await r.json();document.getElementById('campaignsTable').innerHTML=camps.length?camps.map(c=>`<tr><td style="font-weight:500">${c.name}</td><td>${c.campaign_type==='email'?'📧 Email':c.campaign_type==='sms'?'💬 SMS':'📱 Social'}</td><td><span class="status-badge ${c.status==='sent'?'active':c.status==='draft'?'new':'followup'}">${c.status}</span></td><td>${c.sent_count||0}</td><td>${c.opened_count||0}</td><td>${c.clicked_count||0}</td><td class="table-date">${new Date(c.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-primary" onclick="sendCampaign(${c.id})">Send</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:30px">No campaigns yet</td></tr>'}catch(e){}}
-   699|function openCampaignModal(){['campName','campSubject','campContent'].forEach(id=>document.getElementById(id).value='');document.getElementById('campType').value='email';openModal('campaignModal')}
-   700|async function saveCampaign(){const data={name:document.getElementById('campName').value,campaign_type:document.getElementById('campType').value,subject:document.getElementById('campSubject').value,content:document.getElementById('campContent').value};if(!data.name){showToast('Name required','error');return}
-   701|  const r=await apiFetch('/campaigns',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Campaign created','success');closeModal('campaignModal');loadCampaigns()}}
-   702|async function sendCampaign(id){await apiFetch('/campaigns/'+id,{method:'PUT',body:JSON.stringify({status:'sent',sent_count:1})});loadCampaigns();showToast('Campaign sent!','success')}
-   703|
-   704|// === Analytics ===
-   705|async function loadAnalytics(){try{const r=await apiFetch('/analytics/dashboard');const d=await r.json();document.getElementById('anaTotalLeads').textContent=d.total_leads||0;document.getElementById('anaAvgScore').textContent=Math.round(d.ai_score_avg||0);document.getElementById('anaRevenue').textContent='$'+((d.monthly_revenue||0)/1000).toFixed(0)+'K';
-   706|  // Funnel chart
-   707|  const cf=document.getElementById('chartFunnel');if(cf){Object.values(chartInstances).forEach(ch=>{if(ch.canvas===cf)ch.destroy()});const st=['New Lead','Contacted','Qualified','Showing','Offer','Contract','Closed'];const vals=[d.stage_distribution?.new_lead||0,d.stage_distribution?.contacted||0,d.stage_distribution?.qualified||0,d.stage_distribution?.showing_scheduled||0,d.stage_distribution?.offer_submitted||0,d.stage_distribution?.under_contract||0,d.stage_distribution?.closed||0];chartInstances.funnel=new Chart(cf,{type:'bar',data:{labels:st,datasets:[{data:vals,backgroundColor:['#6366f1','#8b5cf6','#0ea5e9','#06b6d4','#f59e0b','#10b981','#6b7280'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:getChartColors().grid},ticks:{color:getChartColors().text}},x:{grid:{display:false},ticks:{color:getChartColors().text}}}}})}
-   708|  // Source table
-   709|  const pr=await apiFetch('/analytics/performance');const pd=await pr.json();const sources=pd.lead_sources||[];document.getElementById('sourceTable').innerHTML='<thead><tr><th>Source</th><th>Total Leads</th><th>Closed</th><th>Conversion</th></tr></thead><tbody>'+sources.map(s=>`<tr><td style="font-weight:500">${s.lead_source||'Unknown'}</td><td>${s.total}</td><td>${s.closed}</td><td>${s.total>0?Math.round(s.closed/s.total*100):0}%</td></tr>`).join('')+'</tbody>';
-   710|  // ROI chart
-   711|  const cr=document.getElementById('chartSourceROI');if(cr&&sources.length){Object.values(chartInstances).forEach(ch=>{if(ch.canvas===cr)ch.destroy()});chartInstances.roi=new Chart(cr,{type:'bar',data:{labels:sources.map(s=>s.lead_source||'Unknown'),datasets:[{label:'Leads',data:sources.map(s=>s.total),backgroundColor:getChartColors().accent,borderRadius:6},{label:'Closed',data:sources.map(s=>s.closed),backgroundColor:getChartColors().emerald,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:getChartColors().text}}},scales:{y:{grid:{color:getChartColors().grid},ticks:{color:getChartColors().text}},x:{grid:{display:false},ticks:{color:getChartColors().text}}}}})}
-   712|  document.getElementById('anaResponseRate').textContent=pd.response_metrics?.total_comms?Math.round(pd.response_metrics.inbound/pd.response_metrics.total_comms*100)+'%':'0%'}catch(e){console.error(e)}
-   713|}
-   714|
-   715|// === Settings ===
-   716|function settingsTab(tab,el){document.querySelectorAll('#screen-settings .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('settingsProfile').style.display=tab==='profile'?'block':'none';document.getElementById('settingsSubscription').style.display=tab==='subscription'?'block':'none';document.getElementById('settingsIntegrations').style.display=tab==='integrations'?'block':'none'}
-   717|async function saveSettings(){const name=document.getElementById('setName').value;const email=document.getElementById('setEmail').value;if(currentUser&&name){currentUser.full_name=name;currentUser.email=email;updateUserUI();showToast('Settings saved','success')}}
-   718|
-   719|// === Init ===
-   720|function init(){initTheme();authLogin();setTimeout(renderCharts,200);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileSidebar();if(e.ctrlKey&&e.key==='t'){e.preventDefault();toggleTheme()}});console.log('🚀 LeadFlow AI CRM ready')}
-   721|if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-   722|</script>
-   723|</body>
-   724|</html>
+   function authLogout(){localStorage.removeItem('leadflow_token');location.reload()}
+   function updateUserUI(){if(!currentUser)return;document.getElementById('setName').value=currentUser.full_name||'';document.getElementById('setEmail').value=currentUser.email||'';document.getElementById('setRole').value=currentUser.role||'';document.getElementById('setPlan').value=(currentUser.subscription||currentUser).plan||'starter';
+     const av=document.getElementById('avatarBtn');av.childNodes[0].textContent=(currentUser.full_name||'AM').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+     const si=document.getElementById('subInfo');if(si)si.innerHTML=`<div class="info-item"><span class="info-label">Plan</span><span class="info-value" style="text-transform:capitalize">${(currentUser.subscription||currentUser).plan||'starter'}</span></div><div class="info-item"><span class="info-label">Status</span><span class="info-value">${(currentUser.subscription||currentUser).status||'active'}</span></div>`;
+   }
+   
+   // === Theme ===
+   function initTheme(){const s=localStorage.getItem('leadflow_theme');if(s==='dark'){document.documentElement.classList.add('dark');document.getElementById('themeIcon').textContent='☀️'}else{document.getElementById('themeIcon').textContent='🌙'}}
+   function toggleTheme(){const d=document.documentElement.classList.toggle('dark');localStorage.setItem('leadflow_theme',d?'dark':'light');document.getElementById('themeIcon').textContent=d?'☀️':'🌙';updateChartColors()}
+   document.getElementById('themeToggle').addEventListener('click',toggleTheme);
+   
+   // === Navigation ===
+   function navigateTo(screenId){if(currentScreen===screenId)return;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sidebar-nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById('screen-'+screenId);if(el)el.classList.add('active');const nav=document.querySelector(`.sidebar-nav-item[data-screen="${screenId}"]`);if(nav)nav.classList.add('active');document.getElementById('topbarTitle').textContent=SCREEN_TITLES[screenId]||screenId;currentScreen=screenId;closeMobileSidebar();if(screenId==='dashboard'){setTimeout(renderCharts,100);loadDashboard()}if(screenId==='pipeline')renderPipeline();if(screenId==='analytics')loadAnalytics();if(screenId==='appointments'){renderCalendar();loadAppointments()}}
+   document.querySelectorAll('.sidebar-nav-item[data-screen]').forEach(i=>i.addEventListener('click',e=>{e.preventDefault();navigateTo(i.dataset.screen)}));
+   function openMobileSidebar(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('sidebarOverlay').classList.add('show')}
+   function closeMobileSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('sidebarOverlay').classList.remove('show')}
+   document.getElementById('hamburgerBtn').addEventListener('click',openMobileSidebar);
+   document.getElementById('sidebarOverlay').addEventListener('click',closeMobileSidebar);
+   
+   // === Modals ===
+   function openModal(id){document.getElementById(id).classList.add('open')}
+   function closeModal(id){document.getElementById(id).classList.remove('open')}
+   
+   // === Toasts ===
+   function showToast(msg,type='info'){const c=document.getElementById('toastContainer');const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='all 0.3s';setTimeout(()=>t.remove(),300)},3500)}
+   
+   // === Dashboard ===
+   async function loadDashboard(){
+     try{const r=await apiFetch('/analytics/dashboard');const d=await r.json();
+       document.getElementById('kpiNewLeads').textContent=d.new_leads_today||0;
+       document.getElementById('kpiActive').textContent=d.active_conversations||0;
+       document.getElementById('kpiFollowups').textContent=d.upcoming_followups||0;
+       document.getElementById('kpiAppts').textContent=d.appointments_scheduled||0;
+       document.getElementById('kpiContract').textContent=d.listings_under_contract||0;
+       document.getElementById('kpiClosed').textContent=d.closed_transactions||0;
+       document.getElementById('kpiRevenue').textContent='$'+((d.monthly_revenue||0)/1000).toFixed(0)+'K';
+       document.getElementById('kpiConvRate').textContent=(d.conversion_rate||0)+'%';
+       // Recent leads
+       loadRecentLeads();
+     }catch(e){console.error(e)}
+   }
+   async function loadRecentLeads(){try{const r=await apiFetch('/leads?limit=5');const leads=await r.json();const t=document.getElementById('recentLeadsTable');t.innerHTML=leads.slice(0,5).map(l=>`<tr><td><div class="lead-name-cell"><div class="lead-avatar">${(l.name||'??').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div><div><div class="lead-name">${esc(l.name)}</div><div class="lead-company">${esc(l.email||'')}</div></div></div></td><td>${esc(l.lead_source||'-')}</td><td><span class="status-badge ${l.stage==='closed'?'active':l.stage==='new_lead'?'new':'followup'}">${STAGE_LABELS[l.stage]||l.stage}</span></td><td class="table-value">${l.budget_max?'$'+(l.budget_max/1000).toFixed(0)+'K':'-'}</td><td><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></td><td class="table-date">${esc(l.last_contacted||'Never')}</td><td><div class="table-actions"><button class="table-action-btn" onclick="viewLead(${l.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('')}catch(e){}
+   }
+   
+   // === Charts ===
+   function getChartColors(){const d=document.documentElement.classList.contains('dark');return{accent:'#0ea5e9',accentLight:'#38bdf8',teal:'#06b6d4',grid:d?'#334155':'#e2e8f0',text:d?'#94a3b8':'#64748b',purple:'#8b5cf6',emerald:'#10b981',amber:'#f59e0b',rose:'#f43f5e',slate:'#64748b'}}
+   function renderCharts(){const c=getChartColors();Object.values(chartInstances).forEach(ch=>ch.destroy());chartInstances={};
+     const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+     const ctx1=document.getElementById('chartMonthlyTrend');if(ctx1)chartInstances.trend=new Chart(ctx1,{type:'line',data:{labels:m,datasets:[{label:'New Leads',data:[120,145,160,155,190,210,195,225,240,230,260,248],borderColor:c.accent,borderWidth:2.5,tension:0.4,fill:true,backgroundColor:'rgba(14,165,233,0.08)',pointRadius:3},{label:'Closed',data:[80,95,105,100,120,135,125,145,155,148,170,162],borderColor:c.teal,borderWidth:2.5,tension:0.4,fill:false,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,color:c.text}}},scales:{y:{grid:{color:c.grid},ticks:{color:c.text}},x:{grid:{color:c.grid},ticks:{color:c.text}}}}});
+     const ctx2=document.getElementById('chartPipeline');if(ctx2)chartInstances.pipeline=new Chart(ctx2,{type:'doughnut',data:{labels:Object.values(STAGE_LABELS).slice(0,6),datasets:[{data:[48,35,28,18,12,8],backgroundColor:[c.purple,'#7c3aed',c.accent,c.teal,c.amber,c.emerald],borderColor:'transparent'}]},options:{responsive:true,cutout:'65%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,color:c.text,padding:10,font:{size:10}}}}}});
+     const ctx3=document.getElementById('chartLeadSources');if(ctx3)chartInstances.sources=new Chart(ctx3,{type:'bar',data:{labels:['Website','Referral','Zillow','Open House','Social','Other'],datasets:[{data:[62,48,40,35,28,22],backgroundColor:[c.accent,c.teal,c.purple,c.amber,c.emerald,c.slate],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:c.grid},ticks:{color:c.text}},y:{grid:{display:false},ticks:{color:c.text}}}}});
+   }
+   function updateChartColors(){renderCharts()}
+   document.querySelectorAll('.chart-period-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.chart-period-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
+   
+   // === Leads CRUD ===
+   async function loadLeads(){try{const s=document.getElementById('leadSearch').value;const stage=document.getElementById('leadStageFilter').value;const scoreF=document.getElementById('leadScoreFilter').value;let url='/leads?';if(s)url+='search='+encodeURIComponent(s)+'&';if(stage)url+='stage='+stage+'&';const r=await apiFetch(url);let leads=await r.json();if(scoreF==='hot')leads=leads.filter(l=>l.ai_score>=70);else if(scoreF==='warm')leads=leads.filter(l=>l.ai_score>=40&&l.ai_score<70);else if(scoreF==='cold')leads=leads.filter(l=>l.ai_score<40);allLeads=leads;document.getElementById('leadsCount').textContent=leads.length;const t=document.getElementById('leadsTableBody');const e=document.getElementById('leadsEmpty');if(leads.length===0){t.innerHTML='';e.style.display='block'}else{e.style.display='none';t.innerHTML=leads.map(l=>`<tr><td><div class="lead-name-cell"><div class="lead-avatar" style="cursor:pointer" onclick="viewLead(${l.id})">${(l.name||'??').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase()}</div><div><div class="lead-name" style="cursor:pointer" onclick="viewLead(${l.id})">${esc(l.name)}</div><div class="lead-company">${esc(l.email||'')}</div></div></div></td><td>${esc(l.phone||'-')}</td><td>${esc(l.property_interest||'-')}</td><td>${esc(l.preferred_location||'-')}</td><td><span class="status-badge ${l.stage==='closed'?'active':l.stage==='new_lead'?'new':'followup'}">${STAGE_LABELS[l.stage]||l.stage}</span></td><td><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></td><td class="table-date">${esc(l.last_contacted||'Never')}</td><td><div class="table-actions"><button class="table-action-btn" onclick="viewLead(${l.id})" title="View">👁</button><button class="table-action-btn" onclick="editLead(${l.id})" title="Edit">✏️</button><button class="table-action-btn" onclick="deleteLead(${l.id})" title="Delete">🗑</button></div></td></tr>`).join('')}}catch(e){showToast('Error loading leads','error')}}
+   async function deleteLead(id){if(!confirm('Delete this lead?'))return;await apiFetch('/leads/'+id,{method:'DELETE'});showToast('Lead deleted','success');loadLeads();if(currentScreen==='lead-detail')navigateTo('leads')}
+   async function viewLead(id){currentLeadId=id;navigateTo('lead-detail');const r=await apiFetch('/leads/'+id);const l=await r.json();document.getElementById('leadDetailInfo').innerHTML=`<div class="info-item"><span class="info-label">Name</span><span class="info-value">${esc(l.name)}</span></div><div class="info-item"><span class="info-label">Phone</span><span class="info-value">${esc(l.phone||'-')}</span></div><div class="info-item"><span class="info-label">Email</span><span class="info-value">${esc(l.email||'-')}</span></div><div class="info-item"><span class="info-label">Property Interest</span><span class="info-value">${esc(l.property_interest||'-')}</span></div><div class="info-item"><span class="info-label">Budget</span><span class="info-value">${l.budget_min?'$'+l.budget_min.toLocaleString():''}${l.budget_max?' - $'+l.budget_max.toLocaleString():''}</span></div><div class="info-item"><span class="info-label">Location</span><span class="info-value">${esc(l.preferred_location||'-')}</span></div><div class="info-item"><span class="info-label">Source</span><span class="info-value">${esc(l.lead_source||'-')}</span></div><div class="info-item"><span class="info-label">Timeline</span><span class="info-value">${l.timeline||'-'}</span></div><div class="info-item"><span class="info-label">Stage</span><span class="info-value">${STAGE_LABELS[l.stage]||l.stage}</span></div><div class="info-item"><span class="info-label">AI Score</span><span class="info-value"><span class="status-badge ${l.ai_score>=70?'hot':l.ai_score>=40?'active':'new'}">${l.ai_score||50}</span></span></div><div class="info-item"><span class="info-label">Notes</span><span class="info-value">${esc(l.notes||'None')}</span></div>`;
+     const comms=l.communications||[];const cc=document.getElementById('leadDetailComms');cc.innerHTML=comms.length?comms.map(c=>`<div class="comm-item ${c.direction}${c.ai_generated?' ai-generated':''}"><div class="comm-icon" style="background:${c.channel==='SMS'?'#8b5cf6':c.channel==='Email'?'#0ea5e9':c.channel==='Call'?'#10b981':'#64748b'}20;color:${c.channel==='SMS'?'#8b5cf6':c.channel==='Email'?'#0ea5e9':c.channel==='Call'?'#10b981':'#64748b'}">${c.channel==='SMS'?'💬':c.channel==='Email'?'📧':c.channel==='Call'?'📞':'📝'}</div><div class="comm-content"><div class="comm-meta">${c.channel} • ${c.direction} • ${new Date(c.created_at).toLocaleString()}${c.ai_generated?' • <span style="color:var(--accent)">🤖 AI Generated</span>':''}</div><div class="comm-text">${c.content}</div></div></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px">No communications yet</div>';
+     const apps=l.appointments||[];document.getElementById('leadDetailAppts').innerHTML=apps.length?apps.map(a=>`<div style="padding:8px;margin-bottom:6px;background:var(--bg-tertiary);border-radius:var(--radius-sm);font-size:0.85rem"><div style="font-weight:600">${a.title}</div><div style="color:var(--text-muted)">${new Date(a.start_time).toLocaleString()} - ${a.appt_type}</div><span class="status-badge ${a.status==='confirmed'?'active':a.status==='cancelled'?'hot':'new'}">${a.status}</span></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px;font-size:0.9rem">No appointments</div>';
+   }
+   function editLead(id){const l=allLeads.find(ll=>ll.id===id);if(!l)return;document.getElementById('leadModalTitle').textContent='Edit Lead';document.getElementById('leadFormName').value=l.name||'';document.getElementById('leadFormPhone').value=l.phone||'';document.getElementById('leadFormEmail').value=l.email||'';document.getElementById('leadFormSource').value=l.lead_source||'Website';document.getElementById('leadFormProperty').value=l.property_interest||'';document.getElementById('leadFormLocation').value=l.preferred_location||'';document.getElementById('leadFormBudgetMin').value=l.budget_min||'';document.getElementById('leadFormBudgetMax').value=l.budget_max||'';document.getElementById('leadFormTimeline').value=l.timeline||'1-3 Months';document.getElementById('leadFormStage').value=l.stage||'new_lead';document.getElementById('leadFormNotes').value=l.notes||'';currentLeadId=id;openModal('leadModal')}
+   function openLeadModal(){currentLeadId=null;document.getElementById('leadModalTitle').textContent='Add Lead';['leadFormName','leadFormPhone','leadFormEmail','leadFormProperty','leadFormLocation','leadFormBudgetMin','leadFormBudgetMax','leadFormNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('leadFormSource').value='Website';document.getElementById('leadFormTimeline').value='1-3 Months';document.getElementById('leadFormStage').value='new_lead';openModal('leadModal')}
+   async function saveLead(){const data={name:document.getElementById('leadFormName').value,phone:document.getElementById('leadFormPhone').value,email:document.getElementById('leadFormEmail').value,lead_source:document.getElementById('leadFormSource').value,property_interest:document.getElementById('leadFormProperty').value,preferred_location:document.getElementById('leadFormLocation').value,budget_min:parseFloat(document.getElementById('leadFormBudgetMin').value)||null,budget_max:parseFloat(document.getElementById('leadFormBudgetMax').value)||null,timeline:document.getElementById('leadFormTimeline').value,stage:document.getElementById('leadFormStage').value,notes:document.getElementById('leadFormNotes').value};
+     if(!data.name){showToast('Name is required','error');return}
+     try{const method=currentLeadId?'PUT':'POST';const url=currentLeadId?'/leads/'+currentLeadId:'/leads';const r=await apiFetch(url,{method,body:JSON.stringify(data)});if(r.ok){showToast(currentLeadId?'Lead updated':'Lead created','success');closeModal('leadModal');loadLeads();if(currentLeadId&&currentScreen==='lead-detail')viewLead(currentLeadId)}else{const e=await r.json();showToast(e.error||'Error','error')}}catch(e){showToast('Error saving lead','error')}}
+   async function reScoreLead(){if(!currentLeadId)return;await apiFetch('/leads/'+currentLeadId+'/score',{method:'POST'});showToast('Lead re-scored','success');viewLead(currentLeadId)}
+   async function deleteCurrentLead(){if(!currentLeadId)return;await deleteLead(currentLeadId)}
+   
+   // === Communications ===
+   async function openAddComm(){if(!currentLeadId){showToast('No lead selected','error');return}openModal('commModal')}
+   async function saveComm(){const data={channel:document.getElementById('commChannel').value,direction:document.getElementById('commDirection').value,content:document.getElementById('commContent').value,ai_generated:0};
+     if(!data.content){showToast('Message is required','error');return}
+     const r=await apiFetch('/leads/'+currentLeadId+'/communications',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Communication logged','success');closeModal('commModal');viewLead(currentLeadId);document.getElementById('commContent').value=''}}
+   
+   // === Pipeline ===
+   function renderPipeline(){const stages=['new_lead','contacted','qualified','showing_scheduled','offer_submitted','under_contract','closed','lost'];const colors=['#6366f1','#8b5cf6','#0ea5e9','#06b6d4','#f59e0b','#10b981','#6b7280','#ef4444'];const c=document.getElementById('pipelineContainer');c.innerHTML=stages.map((s,i)=>`<div class="pipeline-column" data-stage="${s}" ondragover="event.preventDefault()" ondrop="dropLead(event,'${s}')"><div class="pipeline-col-header"><span class="pipeline-col-title" style="color:${colors[i]}">${STAGE_LABELS[s]}</span><span class="pipeline-col-count" id="pipeCount-${s}">0</span></div><div class="pipeline-cards" id="pipeCol-${s}"></div></div>`).join('');loadPipelineLeads()}
+   async function loadPipelineLeads(){const r=await apiFetch('/leads');const leads=await r.json();allLeads=leads;const stages=['new_lead','contacted','qualified','showing_scheduled','offer_submitted','under_contract','closed','lost'];stages.forEach(s=>{const col=document.getElementById('pipeCol-'+s);const cnt=document.getElementById('pipeCount-'+s);const cards=leads.filter(l=>l.stage===s);if(cnt)cnt.textContent=cards.length;if(col)col.innerHTML=cards.map(l=>`<div class="pipeline-card" draggable="true" ondragstart="dragLead(event,${l.id})" ondragend="event.target.classList.remove('dragging')" style="border-left-color:${getStageColor(l.stage)};cursor:pointer" onclick="viewLead(${l.id})"><div class="pipeline-card-name">${esc(l.name)}</div><div class="pipeline-card-budget">${l.budget_max?'$'+(l.budget_max/1000).toFixed(0)+'K':''} • ${esc(l.preferred_location||'N/A')}</div><div class="pipeline-card-score"><span class="score-dot ${l.ai_score>=70?'hot':l.ai_score>=40?'warm':'cold'}"></span>Score: ${l.ai_score||50}</div></div>`).join('')})}
+   function getStageColor(stage){const m={new_lead:'#6366f1',contacted:'#8b5cf6',qualified:'#0ea5e9',showing_scheduled:'#06b6d4',offer_submitted:'#f59e0b',under_contract:'#10b981',closed:'#6b7280',lost:'#ef4444'};return m[stage]||'#0ea5e9'}
+   let dragLeadId=null;
+   function dragLead(e,id){dragLeadId=id;e.target.classList.add('dragging');e.dataTransfer.setData('text/plain',id)}
+   async function dropLead(e,stage){e.preventDefault();if(!dragLeadId)return;await apiFetch('/leads/'+dragLeadId+'/stage',{method:'PUT',body:JSON.stringify({stage})});showToast('Lead moved to '+STAGE_LABELS[stage],'success');loadPipelineLeads();loadLeads()}
+   
+   // === AI Assistant ===
+   async function populateLeadSelects(){try{const r=await apiFetch('/leads');const leads=await r.json();const sel=document.getElementById('aiLeadSelect');sel.innerHTML='<option value="">Select a lead...</option>'+leads.map(l=>`<option value="${l.id}">${esc(l.name)} - ${STAGE_LABELS[l.stage]||l.stage}</option>`).join('');document.getElementById('apptLeadSelect').innerHTML='<option value="">Select a lead...</option>'+leads.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('')}catch(e){}}
+   async function generateAI(){const leadId=document.getElementById('aiLeadSelect').value;if(!leadId){showToast('Select a lead first','error');return}
+     const type=document.getElementById('aiMsgType').value;const tone=document.querySelector('.tone-btn.active')?.dataset.tone||'professional';const r=await apiFetch('/leads/'+leadId);const lead=await r.json();const genR=await apiFetch('/ai/generate',{method:'POST',body:JSON.stringify({type,tone,lead_context:lead})});const gen=await genR.json();
+     document.getElementById('aiResult').innerHTML=`<div class="ai-message-card"><div class="ai-message-type">${type.replace(/_/g,' ').toUpperCase()} • ${tone} tone ${gen.ai_generated?'• 🤖 AI Generated':''}</div><div class="ai-message-text">${gen.content||'Unable to generate message'}</div><div class="ai-message-actions"><button class="btn btn-sm btn-primary" onclick="copyAI('${(gen.content||'').replace(/'/g,"\\'").replace(/\n/g,'\\n')}')">📋 Copy</button><button class="btn btn-sm btn-secondary" onclick="sendAIToLead(${leadId},'${type}')">📤 Send to Lead</button></div></div>`}
+   function copyAI(text){navigator.clipboard.writeText(text).then(()=>showToast('Copied!','success'))}
+   async function sendAIToLead(leadId,type){const channel=type.includes('email')?'Email':'SMS';const content=document.querySelector('.ai-message-text')?.textContent||'';await apiFetch('/leads/'+leadId+'/communications',{method:'POST',body:JSON.stringify({channel,direction:'outbound',content,ai_generated:1})});showToast('Message sent!','success')}
+   document.querySelectorAll('.tone-btn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('.tone-btn').forEach(x=>x.classList.remove('active'));this.classList.add('active')}));
+   function navigateToAiFromLead(){if(currentLeadId){document.getElementById('aiLeadSelect').value=currentLeadId;navigateTo('ai-assistant')}}
+   
+   // === Appointments ===
+   function renderCalendar(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();drawCalendar()}
+   function drawCalendar(){const today=new Date();const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const prevDays=new Date(calYear,calMonth,0).getDate();const w=document.getElementById('calendarWidget');let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><button class="btn btn-sm btn-secondary" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--}drawCalendar()">←</button><span style="font-weight:600">${new Date(calYear,calMonth).toLocaleString('default',{month:'long',year:'numeric'})}</span><button class="btn btn-sm btn-secondary" onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++}drawCalendar()">→</button></div><div class="calendar">`;
+     ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>html+=`<div class="calendar-header">${d}</div>`);
+     for(let i=firstDay-1;i>=0;i--){html+=`<div class="calendar-day other-month">${prevDays-i}</div>`}
+     for(let d=1;d<=daysInMonth;d++){const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();html+=`<div class="calendar-day${isToday?' today':''}">${d}</div>`}
+     const total=firstDay+daysInMonth;const remaining=total>35?42-total:35-total;for(let d=1;d<=remaining;d++)html+=`<div class="calendar-day other-month">${d}</div>`;html+='</div>';w.innerHTML=html}
+   async function loadAppointments(){try{const r=await apiFetch('/appointments');const apps=await r.json();document.getElementById('appointmentsList').innerHTML=apps.length?apps.map(a=>`<div style="padding:12px;margin-bottom:8px;background:var(--bg-tertiary);border-radius:var(--radius);border-left:3px solid var(--accent)"><div style="font-weight:600;display:flex;justify-content:space-between"><span>${a.title}</span><span class="status-badge ${a.status==='confirmed'?'active':a.status==='cancelled'?'hot':'new'}">${a.status}</span></div><div style="font-size:0.85rem;color:var(--text-secondary)">${a.lead_name||''} • ${a.appt_type}</div><div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px">${new Date(a.start_time).toLocaleString()} - ${new Date(a.end_time).toLocaleTimeString()}</div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="confirmAppt(${a.id})">✓ Confirm</button><button class="btn btn-sm btn-secondary" onclick="cancelAppt(${a.id})">✕ Cancel</button></div></div>`).join(''):'<div style="text-align:center;color:var(--text-muted);padding:20px">No appointments scheduled</div>'}catch(e){}}
+   function openApptModal(){document.getElementById('apptStart').value='';document.getElementById('apptEnd').value='';document.getElementById('apptNotes').value='';openModal('apptModal')}
+   async function saveAppointment(){const data={lead_id:document.getElementById('apptLeadSelect').value,title:document.getElementById('apptTitle').value,appt_type:document.getElementById('apptType').value,start_time:document.getElementById('apptStart').value,end_time:document.getElementById('apptEnd').value,notes:document.getElementById('apptNotes').value};
+     if(!data.lead_id||!data.start_time){showToast('Lead and date required','error');return}
+     const r=await apiFetch('/appointments',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Appointment scheduled','success');closeModal('apptModal');loadAppointments()}}
+   async function confirmAppt(id){await apiFetch('/appointments/'+id,{method:'PUT',body:JSON.stringify({status:'confirmed'})});loadAppointments();showToast('Confirmed','success')}
+   async function cancelAppt(id){await apiFetch('/appointments/'+id,{method:'PUT',body:JSON.stringify({status:'cancelled'})});loadAppointments();showToast('Cancelled','info')}
+   function scheduleFromLead(){if(currentLeadId){document.getElementById('apptLeadSelect').value=currentLeadId;openApptModal();navigateTo('appointments')}}
+   
+   // === Campaigns ===
+   async function loadCampaigns(){try{const r=await apiFetch('/campaigns');const camps=await r.json();document.getElementById('campaignsTable').innerHTML=camps.length?camps.map(c=>`<tr><td style="font-weight:500">${c.name}</td><td>${c.campaign_type==='email'?'📧 Email':c.campaign_type==='sms'?'💬 SMS':'📱 Social'}</td><td><span class="status-badge ${c.status==='sent'?'active':c.status==='draft'?'new':'followup'}">${c.status}</span></td><td>${c.sent_count||0}</td><td>${c.opened_count||0}</td><td>${c.clicked_count||0}</td><td class="table-date">${new Date(c.created_at).toLocaleDateString()}</td><td><button class="btn btn-sm btn-primary" onclick="sendCampaign(${c.id})">Send</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:30px">No campaigns yet</td></tr>'}catch(e){}}
+   function openCampaignModal(){['campName','campSubject','campContent'].forEach(id=>document.getElementById(id).value='');document.getElementById('campType').value='email';openModal('campaignModal')}
+   async function saveCampaign(){const data={name:document.getElementById('campName').value,campaign_type:document.getElementById('campType').value,subject:document.getElementById('campSubject').value,content:document.getElementById('campContent').value};if(!data.name){showToast('Name required','error');return}
+     const r=await apiFetch('/campaigns',{method:'POST',body:JSON.stringify(data)});if(r.ok){showToast('Campaign created','success');closeModal('campaignModal');loadCampaigns()}}
+   async function sendCampaign(id){await apiFetch('/campaigns/'+id,{method:'PUT',body:JSON.stringify({status:'sent',sent_count:1})});loadCampaigns();showToast('Campaign sent!','success')}
+   
+   // === Analytics ===
+   async function loadAnalytics(){try{const r=await apiFetch('/analytics/dashboard');const d=await r.json();document.getElementById('anaTotalLeads').textContent=d.total_leads||0;document.getElementById('anaAvgScore').textContent=Math.round(d.ai_score_avg||0);document.getElementById('anaRevenue').textContent='$'+((d.monthly_revenue||0)/1000).toFixed(0)+'K';
+     // Funnel chart
+     const cf=document.getElementById('chartFunnel');if(cf){Object.values(chartInstances).forEach(ch=>{if(ch.canvas===cf)ch.destroy()});const st=['New Lead','Contacted','Qualified','Showing','Offer','Contract','Closed'];const vals=[d.stage_distribution?.new_lead||0,d.stage_distribution?.contacted||0,d.stage_distribution?.qualified||0,d.stage_distribution?.showing_scheduled||0,d.stage_distribution?.offer_submitted||0,d.stage_distribution?.under_contract||0,d.stage_distribution?.closed||0];chartInstances.funnel=new Chart(cf,{type:'bar',data:{labels:st,datasets:[{data:vals,backgroundColor:['#6366f1','#8b5cf6','#0ea5e9','#06b6d4','#f59e0b','#10b981','#6b7280'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:getChartColors().grid},ticks:{color:getChartColors().text}},x:{grid:{display:false},ticks:{color:getChartColors().text}}}}})}
+     // Source table
+     const pr=await apiFetch('/analytics/performance');const pd=await pr.json();const sources=pd.lead_sources||[];document.getElementById('sourceTable').innerHTML='<thead><tr><th>Source</th><th>Total Leads</th><th>Closed</th><th>Conversion</th></tr></thead><tbody>'+sources.map(s=>`<tr><td style="font-weight:500">${s.lead_source||'Unknown'}</td><td>${s.total}</td><td>${s.closed}</td><td>${s.total>0?Math.round(s.closed/s.total*100):0}%</td></tr>`).join('')+'</tbody>';
+     // ROI chart
+     const cr=document.getElementById('chartSourceROI');if(cr&&sources.length){Object.values(chartInstances).forEach(ch=>{if(ch.canvas===cr)ch.destroy()});chartInstances.roi=new Chart(cr,{type:'bar',data:{labels:sources.map(s=>s.lead_source||'Unknown'),datasets:[{label:'Leads',data:sources.map(s=>s.total),backgroundColor:getChartColors().accent,borderRadius:6},{label:'Closed',data:sources.map(s=>s.closed),backgroundColor:getChartColors().emerald,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:getChartColors().text}}},scales:{y:{grid:{color:getChartColors().grid},ticks:{color:getChartColors().text}},x:{grid:{display:false},ticks:{color:getChartColors().text}}}}})}
+     document.getElementById('anaResponseRate').textContent=pd.response_metrics?.total_comms?Math.round(pd.response_metrics.inbound/pd.response_metrics.total_comms*100)+'%':'0%'}catch(e){console.error(e)}
+   }
+   
+   // === Settings ===
+   function settingsTab(tab,el){document.querySelectorAll('#screen-settings .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('settingsProfile').style.display=tab==='profile'?'block':'none';document.getElementById('settingsSubscription').style.display=tab==='subscription'?'block':'none';document.getElementById('settingsIntegrations').style.display=tab==='integrations'?'block':'none'}
+   async function saveSettings(){const name=document.getElementById('setName').value;const email=document.getElementById('setEmail').value;if(currentUser&&name){currentUser.full_name=name;currentUser.email=email;updateUserUI();showToast('Settings saved','success')}}
+   
+   // === Init ===
+   function init(){initTheme();authLogin();setTimeout(renderCharts,200);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileSidebar();if(e.ctrlKey&&e.key==='t'){e.preventDefault();toggleTheme()}});console.log('🚀 LeadFlow AI CRM ready')}
+   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+   </script>
+   </body>
+   </html>
